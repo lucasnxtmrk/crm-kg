@@ -19,6 +19,12 @@ import EmptyTask from "./empty";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import TaskCard from "./task";
 
+type Props = {
+  column: Column;
+  tasks: InfluenciadorKanban[];
+  onTaskClick: (inf: InfluenciadorKanban) => void;
+};
+
 type Column = {
   id: string;
   title: string;
@@ -38,11 +44,11 @@ type InfluenciadorKanban = {
 function ColumnContainer({
   column,
   tasks,
-  handleOpenTask,
+  onTaskClick,
 }: {
   column: Column;
   tasks: InfluenciadorKanban[];
-  handleOpenTask: () => void;
+  onTaskClick: (task: InfluenciadorKanban) => void;
 }) {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [deleteColumn, setDeleteColumn] = useState<boolean>(false);
@@ -69,6 +75,7 @@ function ColumnContainer({
     transition,
     transform: CSS.Transform.toString(transform),
   };
+
 
   return (
     <>
@@ -110,7 +117,6 @@ function ColumnContainer({
                   <Button
                     size="icon"
                     className="w-6 h-6 bg-transparent ring-offset-transparent hover:bg-transparent border border-default-200 text-default-600 hover:ring-0 hover:ring-transparent"
-                    onClick={handleOpenTask}
                   >
                     <Plus className="w-4 h-4" />
                   </Button>
@@ -124,15 +130,15 @@ function ColumnContainer({
         </CardHeader>
 
         <CardContent className="flex-1 pt-6 px-3.5 h-full overflow-y-auto no-scrollbar">
-          <div className="space-y-6">
-            {tasks?.length === 0 && <EmptyTask />}
-            <SortableContext items={tasksIds}>
-              {tasks.map((task) => (
-                <TaskCard task={task} key={task.id} />
-              ))}
-            </SortableContext>
-          </div>
-        </CardContent>
+  <div className="space-y-6">
+    {tasks?.length === 0 && <EmptyTask />}
+    <SortableContext items={tasksIds}>
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />
+      ))}
+    </SortableContext>
+  </div>
+</CardContent>
       </Card>
     </>
   );

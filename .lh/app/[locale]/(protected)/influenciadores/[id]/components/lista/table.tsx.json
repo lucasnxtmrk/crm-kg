@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 23,
+            "activePatchIndex": 24,
             "patches": [
                 {
                     "date": 1744940463076,
@@ -100,6 +100,10 @@
                 {
                     "date": 1745121569886,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,10 +25,9 @@\n } from '@/components/ui/table';\r\n import TablePagination from './table-pagination';\r\n import { getInfluenciadoresBySlug, Influenciador } from '@/lib/influenciadores';\r\n import { useMemo, useState } from 'react';\r\n-import InfluenciadorModal from '../InfluenciadorModal';\r\n-\r\n+import InfluenciadorModal from '../../../components/InfluenciadorModal';\r\n interface Props {\r\n   plataformaSlug: string;\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1745128957102,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -130,12 +130,12 @@\n       <TablePagination table={table} />\r\n \r\n       {/* Modal do Influenciador */}\r\n       <InfluenciadorModal\r\n-        open={modalAberto}\r\n-        onClose={() => setModalAberto(false)}\r\n-        influenciador={influenciadorSelecionado}\r\n-      />\r\n+  open={modalAberto}\r\n+  onClose={() => setModalAberto(false)}\r\n+  influenciador={influenciadorSelecionado}\r\n+/>\r\n     </div>\r\n   );\r\n };\r\n \r\n"
                 }
             ],
             "date": 1744940463076,

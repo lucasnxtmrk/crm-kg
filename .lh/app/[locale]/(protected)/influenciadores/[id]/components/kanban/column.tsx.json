@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 3,
+            "activePatchIndex": 9,
             "patches": [
                 {
                     "date": 1745001887067,
@@ -20,6 +20,30 @@
                 {
                     "date": 1745005610566,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -99,15 +99,8 @@\n \r\n             <TooltipProvider>\r\n               <Tooltip>\r\n                 <TooltipTrigger asChild>\r\n-                  <Button\r\n-                    size=\"icon\"\r\n-                    className=\"w-6 h-6 bg-transparent hover:bg-transparent border border-default-200 text-default-600 hover:ring-0 hover:ring-transparent\"\r\n-                    onClick={() => setDeleteColumn(true)}\r\n-                  >\r\n-                    <Trash2 className=\"w-4 h-4\" />\r\n-                  </Button>\r\n                 </TooltipTrigger>\r\n               </Tooltip>\r\n             </TooltipProvider>\r\n \r\n"
+                },
+                {
+                    "date": 1745127575621,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,8 +18,14 @@\n import EmptyTask from \"./empty\";\r\n import DeleteConfirmationDialog from \"@/components/delete-confirmation-dialog\";\r\n import TaskCard from \"./task\";\r\n \r\n+type Props = {\r\n+  column: Column;\r\n+  tasks: InfluenciadorKanban[];\r\n+  onTaskClick: (inf: InfluenciadorKanban) => void;\r\n+};\r\n+\r\n type Column = {\r\n   id: string;\r\n   title: string;\r\n };\r\n@@ -126,12 +132,12 @@\n         <CardContent className=\"flex-1 pt-6 px-3.5 h-full overflow-y-auto no-scrollbar\">\r\n           <div className=\"space-y-6\">\r\n             {tasks?.length === 0 && <EmptyTask />}\r\n             <SortableContext items={tasksIds}>\r\n-              {tasks.map((task) => (\r\n-                <TaskCard task={task} key={task.id} />\r\n-              ))}\r\n-            </SortableContext>\r\n+    {tasks.map((task) => (\r\n+      <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />\r\n+    ))}\r\n+  </SortableContext>\r\n           </div>\r\n         </CardContent>\r\n       </Card>\r\n     </>\r\n"
+                },
+                {
+                    "date": 1745127601181,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -75,8 +75,12 @@\n     transition,\r\n     transform: CSS.Transform.toString(transform),\r\n   };\r\n \r\n+  function onTaskClick(task: InfluenciadorKanban): void {\r\n+    throw new Error(\"Function not implemented.\");\r\n+  }\r\n+\r\n   return (\r\n     <>\r\n       <DeleteConfirmationDialog\r\n         open={deleteColumn}\r\n"
+                },
+                {
+                    "date": 1745127633302,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -133,17 +133,17 @@\n           </div>\r\n         </CardHeader>\r\n \r\n         <CardContent className=\"flex-1 pt-6 px-3.5 h-full overflow-y-auto no-scrollbar\">\r\n-          <div className=\"space-y-6\">\r\n-            {tasks?.length === 0 && <EmptyTask />}\r\n-            <SortableContext items={tasksIds}>\r\n-    {tasks.map((task) => (\r\n-      <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />\r\n-    ))}\r\n-  </SortableContext>\r\n-          </div>\r\n-        </CardContent>\r\n+  <div className=\"space-y-6\">\r\n+    {tasks?.length === 0 && <EmptyTask />}\r\n+    <SortableContext items={tasksIds}>\r\n+      {tasks.map((task) => (\r\n+        <TaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />\r\n+      ))}\r\n+    </SortableContext>\r\n+  </div>\r\n+</CardContent>\r\n       </Card>\r\n     </>\r\n   );\r\n }\r\n"
+                },
+                {
+                    "date": 1745127666551,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -75,11 +75,8 @@\n     transition,\r\n     transform: CSS.Transform.toString(transform),\r\n   };\r\n \r\n-  function onTaskClick(task: InfluenciadorKanban): void {\r\n-    throw new Error(\"Function not implemented.\");\r\n-  }\r\n \r\n   return (\r\n     <>\r\n       <DeleteConfirmationDialog\r\n"
+                },
+                {
+                    "date": 1745127741166,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -43,13 +43,13 @@\n \r\n function ColumnContainer({\r\n   column,\r\n   tasks,\r\n-  handleOpenTask,\r\n+  onTaskClick,\r\n }: {\r\n   column: Column;\r\n   tasks: InfluenciadorKanban[];\r\n-  handleOpenTask: () => void;\r\n+  onTaskClick: (task: InfluenciadorKanban) => void;\r\n }) {\r\n   const [editMode, setEditMode] = useState<boolean>(false);\r\n   const [deleteColumn, setDeleteColumn] = useState<boolean>(false);\r\n \r\n"
+                },
+                {
+                    "date": 1745127771196,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -116,9 +116,8 @@\n                 <TooltipTrigger asChild>\r\n                   <Button\r\n                     size=\"icon\"\r\n                     className=\"w-6 h-6 bg-transparent ring-offset-transparent hover:bg-transparent border border-default-200 text-default-600 hover:ring-0 hover:ring-transparent\"\r\n-                    onClick={handleOpenTask}\r\n                   >\r\n                     <Plus className=\"w-4 h-4\" />\r\n                   </Button>\r\n                 </TooltipTrigger>\r\n"
                 }
             ],
             "date": 1745001887067,

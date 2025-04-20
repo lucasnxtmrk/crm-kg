@@ -131,10 +131,10 @@ const ListaInfluenciadores = ({ plataformaSlug }: Props) => {
 
       {/* Modal do Influenciador */}
       <InfluenciadorModal
-        open={modalAberto}
-        onClose={() => setModalAberto(false)}
-        influenciador={influenciadorSelecionado}
-      />
+  open={modalAberto}
+  onClose={() => setModalAberto(false)}
+  influenciador={influenciadorSelecionado}
+/>
     </div>
   );
 };

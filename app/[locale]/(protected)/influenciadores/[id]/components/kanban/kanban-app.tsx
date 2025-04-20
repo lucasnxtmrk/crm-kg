@@ -16,21 +16,16 @@ import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 import ColumnContainer from './column';
 import TaskCard from './task';
 import { createPortal } from 'react-dom';
-import AddBoard from './add-board';
-import CreateTask from './create-task';
 import { useTranslations } from 'next-intl';
 import { getInfluenciadoresBySlug, statusKanbanList } from '@/lib/influenciadores';
-
-// ❌ REMOVA ISSO:
-// type InfluenciadorKanban = { ... }
-
-// ✅ USE ISSO:
 import type { Influenciador } from '@/lib/influenciadores';
+import InfluenciadorModal from '@/app/[locale]/(protected)/influenciadores/components/InfluenciadorModal';
 
 type Column = {
   id: string;
   title: string;
 };
+
 const KanBanApp = () => {
   const t = useTranslations("KanbanApp");
   const params = useParams();
@@ -44,17 +39,19 @@ const KanBanApp = () => {
         title: status.title,
       }))
   );
-  
+
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
-  // ✅ Usando tipo completo: Influenciador
   const [tasks, setTasks] = useState<Influenciador[]>(
     getInfluenciadoresBySlug(plataformaId)
   );
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<Influenciador | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
+
+  // ✅ Estado do Modal
+  const [modalOpen, setModalOpen] = useState(false);
+  const [influenciadorSelecionado, setInfluenciadorSelecionado] = useState<Influenciador | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -117,8 +114,14 @@ const KanBanApp = () => {
       setTasks((prev) =>
         prev.map((task) =>
           task.id === activeId
-            ? { ...task, status: isOverATask && over.data.current ? over.data.current.task.status : overId }
-            : task        )
+            ? {
+                ...task,
+                status: isOverATask && over.data.current
+                  ? over.data.current.task.status
+                  : overId,
+              }
+            : task
+        )
       );
     }
   }
@@ -126,8 +129,6 @@ const KanBanApp = () => {
   return (
     <>
       <div className="">
-        <div className="flex gap-2 mb-5">
-        </div>
         <DndContext
           sensors={sensors}
           onDragStart={onDragStart}
@@ -141,7 +142,10 @@ const KanBanApp = () => {
                   key={col.id}
                   column={col}
                   tasks={tasks.filter((task) => task.status === col.id)}
-                  handleOpenTask={() => setOpen(true)}
+                  onTaskClick={(inf) => {
+                    setInfluenciadorSelecionado(inf);
+                    setModalOpen(true);
+                  }}
                 />
               ))}
             </SortableContext>
@@ -152,7 +156,6 @@ const KanBanApp = () => {
               {activeColumn && (
                 <ColumnContainer
                   column={activeColumn}
-                  handleOpenTask={() => setOpen(true)}
                   tasks={tasks.filter((task) => task.status === activeColumn.id)}
                 />
               )}
@@ -162,9 +165,19 @@ const KanBanApp = () => {
           )}
         </DndContext>
       </div>
-      <CreateTask open={open} setOpen={setOpen} />
+
+      {/* ✅ Modal do influenciador */}
+      <InfluenciadorModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        influenciador={influenciadorSelecionado}
+        onUpdate={(atualizado) => {
+          setTasks((prev) =>
+            prev.map((i) => (i.id === atualizado.id ? atualizado : i))
+          );
+        }}
+      />
     </>
   );
 };
-
 export default KanBanApp;

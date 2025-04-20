@@ -32,6 +32,7 @@ export type Influenciador = {
   dataCadastro: string;
   cpf: string;
   status: 'lead' | 'contato' | 'negociacao' | 'ativo' | 'banido';
+  motivoBanimento?: string;
   relacoes: RelacaoPlataforma[];
 };
 
@@ -91,6 +92,17 @@ export const influenciadores: Influenciador[] = [
         "inicio": "2024-01-01",
         "termino": "2025-04-20",
         "salario": 1592
+      },
+      {
+        "plataformaId": "stake",
+        "meta": 5144,
+        "atingido": 6287,
+        "reembolso": 0,
+        "superouMeta": 1143,
+        "statusMeta": "completo",
+        "inicio": "2024-01-01",
+        "termino": "2025-04-20",
+        "salario": 1472
       }
     ]
   },
