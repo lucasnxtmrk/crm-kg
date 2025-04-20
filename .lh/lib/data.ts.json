@@ -1,0 +1,26 @@
+{
+    "sourceFile": "lib/data.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1744233438765,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1744233455883,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n // user data \n const users = [\n   {\n     name: \"Lucas Oliveira \",\n-    email: \"lucas@techlucas.net\",\n+    email: \"dashcode@codeshaper.net\",\n     password: \"password\",\n     image: '/images/users/user-1.jpg',\n   },\n   \n"
+                },
+                {
+                    "date": 1744937789319,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,16 +1,44 @@\n-// user data \n-const users = [\n-  {\n-    name: \"Lucas Oliveira \",\n-    email: \"dashcode@codeshaper.net\",\n-    password: \"password\",\n-    image: '/images/users/user-1.jpg',\n-  },\n-  \n-]\n-\n-export type User = (typeof users)[number]\n-\n-export const getUserByEmail = (email: string) => {\n-  return users.find((user) => user.email === email)\n-}\n\\ No newline at end of file\n+// user data \r\n+const users = [\r\n+  {\r\n+    name: \"Lucas Oliveira \",\r\n+    email: \"dashcode@codeshaper.net\",\r\n+    password: \"password\",\r\n+    image: '/images/users/user-1.jpg',\r\n+  },\r\n+  \r\n+]\r\n+\r\n+export type User = (typeof users)[number]\r\n+\r\n+export const getUserByEmail = (email: string) => {\r\n+  return users.find((user) => user.email === email)\r\n+}\r\n+\r\n+\r\n+\r\n+// 🗂️ Plataformas disponíveis no sistema\r\n+export const plataformas = [\r\n+  {\r\n+    id: \"blaze\",\r\n+    nome: \"Blaze\",\r\n+    imagem: \"/images/plataformas/blaze.png\", // opcional\r\n+  },\r\n+  {\r\n+    id: \"betano\",\r\n+    nome: \"Betano\",\r\n+    imagem: \"/images/plataformas/betano.png\",\r\n+  },\r\n+  {\r\n+    id: \"stake\",\r\n+    nome: \"Stake\",\r\n+    imagem: \"/images/plataformas/stake.png\",\r\n+  },\r\n+  {\r\n+    id: \"sportingbet\",\r\n+    nome: \"Sportingbet\",\r\n+    imagem: \"/images/plataformas/sportingbet.png\",\r\n+  },\r\n+];\r\n+\r\n+export type Plataforma = (typeof plataformas)[number];\r\n"
+                }
+            ],
+            "date": 1744233438765,
+            "name": "Commit-0",
+            "content": "// user data \nconst users = [\n  {\n    name: \"Lucas Oliveira \",\n    email: \"lucas@techlucas.net\",\n    password: \"password\",\n    image: '/images/users/user-1.jpg',\n  },\n  \n]\n\nexport type User = (typeof users)[number]\n\nexport const getUserByEmail = (email: string) => {\n  return users.find((user) => user.email === email)\n}"
+        }
+    ]
+}

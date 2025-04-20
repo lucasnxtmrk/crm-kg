@@ -1,0 +1,22 @@
+{
+    "sourceFile": "middleware.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1745097646435,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1745097845221,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,6 +27,6 @@\n }\r\n  \r\n export const config = {\r\n   // Match only internationalized pathnames\r\n-  matcher: ['/', '/(ar|en)/:path*']\r\n+  matcher: ['/', '/(ar|en|pt)/:path*']\r\n };\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1745097646435,
+            "name": "Commit-0",
+            "content": "import createMiddleware from 'next-intl/middleware';\r\nimport {NextRequest, NextResponse} from 'next/server';\r\nimport {locales} from '@/config';\r\n\r\nexport default async function middleware(request: NextRequest) {\r\n  \r\n \r\n\r\n\r\n  // Step 1: Use the incoming request (example)\r\n  const defaultLocale = request.headers.get('dashcode-locale') || 'pt';\r\n \r\n  // Step 2: Create and call the next-intl middleware (example)\r\n  const handleI18nRouting = createMiddleware({\r\n    locales,\r\n    defaultLocale\r\n    \r\n  });\r\n  const response = handleI18nRouting(request);\r\n \r\n  // Step 3: Alter the response (example)\r\n  response.headers.set('dashcode-locale', defaultLocale);\r\n\r\n\r\n \r\n  return response;\r\n}\r\n \r\nexport const config = {\r\n  // Match only internationalized pathnames\r\n  matcher: ['/', '/(ar|en)/:path*']\r\n};"
+        }
+    ]
+}

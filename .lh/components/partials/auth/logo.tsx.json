@@ -1,0 +1,38 @@
+{
+    "sourceFile": "components/partials/auth/logo.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1745006250217,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1745006365894,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,24 +1,22 @@\n-'use client';\n-import Image from 'next/image';\n-import { useTheme } from \"next-themes\";\n-\n type LogoProps = {\n   className?: string;\n+  variant?: \"default\" | \"white\";\n };\n \n-const Logo = ({ className = \"\" }: LogoProps) => {\n-  const { theme: mode } = useTheme();\n+const Logo = ({ className = \"\", variant }: LogoProps) => {\n+  const { theme } = useTheme();\n+  const isDark = theme === \"dark\";\n \n+  const src =\n+    variant === \"white\" || (variant === undefined && isDark)\n+      ? \"/images/logo/logo-white.svg\"\n+      : \"/images/logo/logo.svg\";\n+\n   return (\n     <div className={className}>\n       <Image\n-        key={mode}\n-        src={\n-          mode === \"light\"\n-            ? \"/images/logo/logo.svg\"\n-            : \"/images/logo/logo-white.svg\"\n-        }\n+        src={src}\n         alt=\"Logo\"\n         width={300}\n         height={300}\n         className=\"w-36\"\n@@ -26,6 +24,4 @@\n       />\n     </div>\n   );\n };\n-\n-export default Logo;\n"
+                },
+                {
+                    "date": 1745006373345,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,22 +1,24 @@\n+'use client';\n+import Image from 'next/image';\n+import { useTheme } from \"next-themes\";\n+\n type LogoProps = {\n   className?: string;\n-  variant?: \"default\" | \"white\";\n };\n \n-const Logo = ({ className = \"\", variant }: LogoProps) => {\n-  const { theme } = useTheme();\n-  const isDark = theme === \"dark\";\n+const Logo = ({ className = \"\" }: LogoProps) => {\n+  const { theme: mode } = useTheme();\n \n-  const src =\n-    variant === \"white\" || (variant === undefined && isDark)\n-      ? \"/images/logo/logo-white.svg\"\n-      : \"/images/logo/logo.svg\";\n-\n   return (\n     <div className={className}>\n       <Image\n-        src={src}\n+        key={mode}\n+        src={\n+          mode === \"light\"\n+            ? \"/images/logo/logo.svg\"\n+            : \"/images/logo/logo-white.svg\"\n+        }\n         alt=\"Logo\"\n         width={300}\n         height={300}\n         className=\"w-36\"\n@@ -24,4 +26,6 @@\n       />\n     </div>\n   );\n };\n+\n+export default Logo;\n"
+                },
+                {
+                    "date": 1745006522274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,10 +5,15 @@\n type LogoProps = {\n   className?: string;\n };\n \n-const Logo = ({ className = \"\" }: LogoProps) => {\n-  const { theme: mode } = useTheme();\n+const Logo = ({ className = \"\", variant }: LogoProps) => {\n+  const { theme } = useTheme();\n+  const isDark = theme === \"dark\";\n+  const src =\n+    variant === \"white\" || (variant === undefined && isDark)\n+      ? \"/images/logo/logo-white.svg\"\n+      : \"/images/logo/logo.svg\";\n \n   return (\n     <div className={className}>\n       <Image\n"
+                },
+                {
+                    "date": 1745006530609,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,8 +3,9 @@\n import { useTheme } from \"next-themes\";\n \n type LogoProps = {\n   className?: string;\n+  variant?: \"default\" | \"white\";\n };\n \n const Logo = ({ className = \"\", variant }: LogoProps) => {\n   const { theme } = useTheme();\n"
+                },
+                {
+                    "date": 1745006559416,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,14 +17,9 @@\n \n   return (\n     <div className={className}>\n       <Image\n-        key={mode}\n-        src={\n-          mode === \"light\"\n-            ? \"/images/logo/logo.svg\"\n-            : \"/images/logo/logo-white.svg\"\n-        }\n+        src={src}\n         alt=\"Logo\"\n         width={300}\n         height={300}\n         className=\"w-36\"\n"
+                }
+            ],
+            "date": 1745006250217,
+            "name": "Commit-0",
+            "content": "'use client';\nimport Image from 'next/image';\nimport { useTheme } from \"next-themes\";\n\ntype LogoProps = {\n  className?: string;\n};\n\nconst Logo = ({ className = \"\" }: LogoProps) => {\n  const { theme: mode } = useTheme();\n\n  return (\n    <div className={className}>\n      <Image\n        key={mode}\n        src={\n          mode === \"light\"\n            ? \"/images/logo/logo.svg\"\n            : \"/images/logo/logo-white.svg\"\n        }\n        alt=\"Logo\"\n        width={300}\n        height={300}\n        className=\"w-36\"\n        priority\n      />\n    </div>\n  );\n};\n\nexport default Logo;\n"
+        }
+    ]
+}

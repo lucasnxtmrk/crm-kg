@@ -1,0 +1,26 @@
+{
+    "sourceFile": "app/[locale]/(protected)/influenciadores/[id]/components/kanban/index.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1745002990509,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1745003242083,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,6 +3,11 @@\n import KanBanApp from './kanban-app';\r\n import { defaultCols, defaultTasks } from './data';\r\n \r\n export default function KanbanWrapper() {\r\n-  return <KanBanApp defaultCols={defaultCols} defaultTasks={defaultTasks} />;\r\n+  return (\r\n+    <KanBanApp\r\n+      defaultCols={defaultCols}\r\n+      defaultTasks={defaultTasks}\r\n+    />\r\n+  );\r\n }\r\n"
+                },
+                {
+                    "date": 1745005249122,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,13 +1,7 @@\n 'use client';\r\n \r\n import KanBanApp from './kanban-app';\r\n-import { defaultCols, defaultTasks } from './data';\r\n \r\n export default function KanbanWrapper() {\r\n-  return (\r\n-    <KanBanApp\r\n-      defaultCols={defaultCols}\r\n-      defaultTasks={defaultTasks}\r\n-    />\r\n-  );\r\n+  return <KanBanApp />;\r\n }\r\n"
+                }
+            ],
+            "date": 1745002990509,
+            "name": "Commit-0",
+            "content": "'use client';\r\n\r\nimport KanBanApp from './kanban-app';\r\nimport { defaultCols, defaultTasks } from './data';\r\n\r\nexport default function KanbanWrapper() {\r\n  return <KanBanApp defaultCols={defaultCols} defaultTasks={defaultTasks} />;\r\n}\r\n"
+        }
+    ]
+}

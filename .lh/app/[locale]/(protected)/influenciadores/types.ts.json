@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/[locale]/(protected)/influenciadores/types.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1745007884752,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1745007884752,
+            "name": "Commit-0",
+            "content": "export type InfluenciadorLista = {\r\n    id: string;\r\n    nome: string;\r\n    imagem?: string;\r\n    instagram: string;\r\n    cpf: string;\r\n    meta: number;\r\n    atingido: number;\r\n    statusMeta: 'completo' | 'incompleto';\r\n  };\r\n  "
+        }
+    ]
+}

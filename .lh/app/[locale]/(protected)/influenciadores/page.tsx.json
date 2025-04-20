@@ -1,0 +1,62 @@
+{
+    "sourceFile": "app/[locale]/(protected)/influenciadores/page.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 11,
+            "patches": [
+                {
+                    "date": 1744937824449,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1744937866511,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,15 +22,15 @@\n                 className=\"block\"\r\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n-                    <Image\r\n-                      src={plataforma.imagem}\r\n-                      alt={plataforma.nome}\r\n-                      width={64}\r\n-                      height={64}\r\n-                      className=\"mx-auto mb-2\"\r\n-                    />\r\n+                  <Image\r\n+  src={plataforma.imagem}\r\n+  alt={plataforma.nome}\r\n+  width={64}\r\n+  height={64}\r\n+  className=\"mx-auto mb-2 w-16 h-16 object-contain\"\r\n+/>\r\n                     <p className=\"text-lg font-semibold\">{plataforma.nome}</p>\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1744937969979,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n           <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\r\n             {plataformas.map((plataforma) => (\r\n               <Link\r\n                 key={plataforma.id}\r\n-                href={`/influenciadores/${plataforma.id}`}\r\n+                href={`en/influenciadores/${plataforma.id}`}\r\n                 className=\"block\"\r\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n"
+                },
+                {
+                    "date": 1744937995914,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n           <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\r\n             {plataformas.map((plataforma) => (\r\n               <Link\r\n                 key={plataforma.id}\r\n-                href={`en/influenciadores/${plataforma.id}`}\r\n+                href={`/influenciadores/${plataforma.id}`}\r\n                 className=\"block\"\r\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n"
+                },
+                {
+                    "date": 1744938020056,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n           <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\r\n             {plataformas.map((plataforma) => (\r\n               <Link\r\n                 key={plataforma.id}\r\n-                href={`/influenciadores/${plataforma.id}`}\r\n+                href={`en/influenciadores/${plataforma.id}`}\r\n                 className=\"block\"\r\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n"
+                },
+                {
+                    "date": 1744938186673,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,9 +17,9 @@\n           <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\r\n             {plataformas.map((plataforma) => (\r\n               <Link\r\n                 key={plataforma.id}\r\n-                href={`en/influenciadores/${plataforma.id}`}\r\n+                href={`/influenciadores/${plataforma.id}`}\r\n                 className=\"block\"\r\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n"
+                },
+                {
+                    "date": 1744939128409,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n 'use client';\r\n \r\n import { plataformas } from \"@/lib/data\";\r\n import { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\";\r\n-import Link from \"next/link\";\r\n+import { Link } from \"@/components/navigation\"; // ou de onde exportou o createSharedPathnamesNavigation\r\n import Image from \"next/image\";\r\n \r\n export default function ListaDePlataformas() {\r\n   return (\r\n"
+                },
+                {
+                    "date": 1744941873731,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -29,9 +29,8 @@\n   width={64}\r\n   height={64}\r\n   className=\"mx-auto mb-2 w-16 h-16 object-contain\"\r\n />\r\n-                    <p className=\"text-lg font-semibold\">{plataforma.nome}</p>\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n             ))}\r\n"
+                },
+                {
+                    "date": 1744941894648,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,13 +23,13 @@\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n-  src={plataforma.imagem}\r\n-  alt={plataforma.nome}\r\n-  width={64}\r\n-  height={64}\r\n-  className=\"mx-auto mb-2 w-16 h-16 object-contain\"\r\n+                    src={plataforma.imagem}\r\n+                    alt={plataforma.nome}\r\n+                    width={120}\r\n+                    height={120}\r\n+                    className=\"mx-auto mb-2 w-16 h-16 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1744941915142,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n                     width={120}\r\n                     height={120}\r\n-                    className=\"mx-auto mb-2 w-16 h-16 object-contain\"\r\n+                    className=\"mx-auto mb-2 w-32 h-32 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1744941928125,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,10 +25,10 @@\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n-                    width={120}\r\n-                    height={120}\r\n+                    width={64}\r\n+                    height={64}\r\n                     className=\"mx-auto mb-2 w-32 h-32 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n"
+                },
+                {
+                    "date": 1744941947311,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,11 +25,11 @@\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n-                    width={64}\r\n-                    height={64}\r\n-                    className=\"mx-auto mb-2 w-32 h-32 object-contain\"\r\n+                    width={120}\r\n+                    height={120}\r\n+                    className=\"mx-auto mb-2 w-24 h-24 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                }
+            ],
+            "date": 1744937824449,
+            "name": "Commit-0",
+            "content": "'use client';\r\n\r\nimport { plataformas } from \"@/lib/data\";\r\nimport { Card, CardContent, CardHeader, CardTitle } from \"@/components/ui/card\";\r\nimport Link from \"next/link\";\r\nimport Image from \"next/image\";\r\n\r\nexport default function ListaDePlataformas() {\r\n  return (\r\n    <div className=\"p-6 space-y-6\">\r\n      <Card>\r\n        <CardHeader>\r\n          <CardTitle>Plataformas cadastradas</CardTitle>\r\n        </CardHeader>\r\n\r\n        <CardContent>\r\n          <div className=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6\">\r\n            {plataformas.map((plataforma) => (\r\n              <Link\r\n                key={plataforma.id}\r\n                href={`/influenciadores/${plataforma.id}`}\r\n                className=\"block\"\r\n              >\r\n                <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                  <CardContent className=\"p-6 text-center space-y-2\">\r\n                    <Image\r\n                      src={plataforma.imagem}\r\n                      alt={plataforma.nome}\r\n                      width={64}\r\n                      height={64}\r\n                      className=\"mx-auto mb-2\"\r\n                    />\r\n                    <p className=\"text-lg font-semibold\">{plataforma.nome}</p>\r\n                  </CardContent>\r\n                </Card>\r\n              </Link>\r\n            ))}\r\n          </div>\r\n        </CardContent>\r\n      </Card>\r\n    </div>\r\n  );\r\n}\r\n"
+        }
+    ]
+}
