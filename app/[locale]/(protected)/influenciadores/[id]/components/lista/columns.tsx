@@ -7,9 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Eye, SquarePen, Trash2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { InfluenciadorLista } from '../../../types';
+import { Influenciador } from '@/lib/influenciadores';
 
-export const getColumns = (): ColumnDef<InfluenciadorLista>[] => [
+
+type Props = {
+  onView: (influenciador: Influenciador) => void;
+};
+
+export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -95,51 +100,60 @@ export const getColumns = (): ColumnDef<InfluenciadorLista>[] => [
   },
   {
     id: 'meta',
-    accessorKey: 'meta',
-    header: ({ column }) => (
-      <button
-        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        className="flex items-center gap-1"
-      >
-        Meta {column.getIsSorted() === 'asc' ? '⬆️' : column.getIsSorted() === 'desc' ? '⬇️' : ''}
-      </button>
-    ),
-    cell: ({ row }) => <span>R$ {row.original.meta.toLocaleString('pt-BR')}</span>,
+    header: 'Meta',
+    cell: ({ row }) => {
+      const rel = row.original.relacoes[0];
+      return <span>R$ {rel?.meta?.toLocaleString('pt-BR') || '0'}</span>;
+    },
   },
   {
     id: 'atingido',
-    accessorKey: 'atingido',
-    header: ({ column }) => (
-      <button
-        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        className="flex items-center gap-1"
-      >
-        Atingido {column.getIsSorted() === 'asc' ? '⬆️' : column.getIsSorted() === 'desc' ? '⬇️' : ''}
-      </button>
-    ),
-    cell: ({ row }) => <span>R$ {row.original.atingido.toLocaleString('pt-BR')}</span>,
+    header: 'Atingido',
+    cell: ({ row }) => {
+      const rel = row.original.relacoes[0];
+      return <span>R$ {rel?.atingido?.toLocaleString('pt-BR') || '0'}</span>;
+    },
   },
   {
-    accessorKey: 'reembolso',
+    id: 'reembolso',
     header: 'Reembolso',
     cell: ({ row }) => {
-      const meta = row.original.meta;
-      const atingido = row.original.atingido;
-    
+      const rel = row.original.relacoes[0];
+      const meta = rel?.meta || 0;
+      const atingido = rel?.atingido || 0;
+      const reembolso = meta > atingido ? meta - atingido : 0;
+  
+      const reembolsoClass =
+        reembolso > 0 ? 'text-red-500 font-medium' : 'text-green-600 font-medium';
+  
+      return <span className={reembolsoClass}>R$ {reembolso.toLocaleString('pt-BR')}</span>;
+    },
+  },
+  
+  {
+    id: 'statusMeta',
+    header: () => (
+      <div className="w-full text-center font-medium">Status da Meta</div>
+    ),
+    cell: ({ row }) => {
+      const rel = row.original.relacoes[0];
+      const meta = rel?.meta || 0;
+      const atingido = rel?.atingido || 0;
+  
       const statusLabel =
         meta === 0 && atingido === 0
           ? 'Meta indefinida'
           : atingido >= meta
-          ? 'Meta Batida'
-          : 'Meta Pendente';
-    
-      const statusClass = 
+          ? 'Meta batida'
+          : 'Meta pendente';
+  
+      const statusClass =
         meta === 0 && atingido === 0
           ? 'bg-muted text-muted-foreground'
           : atingido >= meta
           ? 'bg-green-500 text-white'
           : 'bg-yellow-400 text-yellow-900';
-    
+  
       return (
         <div
           className={cn(
@@ -150,34 +164,31 @@ export const getColumns = (): ColumnDef<InfluenciadorLista>[] => [
           {statusLabel}
         </div>
       );
-    }
-    ,
+    },
   },
+  
   {
     id: 'actions',
     header: 'Ações',
-    cell: () => (
+    cell: ({ row }) => (
       <div className="flex gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button size="icon" variant="outline">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => onView(row.original)}
+              >
                 <Eye className="w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Visualizar</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button size="icon" variant="outline">
-                <SquarePen className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Editar</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+
+        {/* Apagando o botão "Editar" */}
+
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>

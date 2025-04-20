@@ -24,30 +24,39 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import TablePagination from './table-pagination';
-import { getInfluenciadoresBySlug } from '@/lib/influenciadores';
-import { useMemo } from 'react';
-
+import { getInfluenciadoresBySlug, Influenciador } from '@/lib/influenciadores';
+import { useMemo, useState } from 'react';
+import InfluenciadorModal from '../../../components/InfluenciadorModal';
 interface Props {
   plataformaSlug: string;
 }
 
 const ListaInfluenciadores = ({ plataformaSlug }: Props) => {
-  // Transforma os dados com os campos derivados já prontos
   const data = useMemo(() => getInfluenciadoresBySlug(plataformaSlug), [plataformaSlug]);
 
-  // Estado da tabela
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
+  const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
 
+  // 🔵 Modal
+  const [modalAberto, setModalAberto] = useState(false);
+  const [influenciadorSelecionado, setInfluenciadorSelecionado] = useState<Influenciador | null>(null);
+
+  const handleView = (inf: Influenciador) => {
+    setInfluenciadorSelecionado(inf);
+    setModalAberto(true);
+  };
+
+  const columns = getColumns({ onView: handleView });
+
   const table = useReactTable({
     data,
-    columns: getColumns(), // ✅ sem handleSort
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -110,7 +119,7 @@ const ListaInfluenciadores = ({ plataformaSlug }: Props) => {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={getColumns().length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className="h-24 text-center">
                 Nenhum resultado encontrado.
               </TableCell>
             </TableRow>
@@ -119,6 +128,13 @@ const ListaInfluenciadores = ({ plataformaSlug }: Props) => {
       </Table>
 
       <TablePagination table={table} />
+
+      {/* Modal do Influenciador */}
+      <InfluenciadorModal
+        open={modalAberto}
+        onClose={() => setModalAberto(false)}
+        influenciador={influenciadorSelecionado}
+      />
     </div>
   );
 };

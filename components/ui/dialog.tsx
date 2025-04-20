@@ -22,6 +22,8 @@ const dialogVariants = cva(
         default: "md:max-w-[444px] w-[90%]",
         md: "md:max-w-[996px] w-[90%]",
         lg: "md:max-w-[90%] w-[90%]",
+        xl: "max-w-screen-xl w-full", // 👈 novo tamanho
+        full: "max-w-screen-2xl w-full", // 👈 tamanho extra, se quiser mais ainda
       }
     },
     defaultVariants: {
