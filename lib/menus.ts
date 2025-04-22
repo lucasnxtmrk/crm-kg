@@ -66,20 +66,12 @@ export function getMenuList(pathname: string): Group[] {
       menus: [
         {
           id: "reembolsos-pendentes",
-          href: "/reembolsos/pendentes",
+          href: "/reembolsos/",
           label: "Pendentes",
           active: pathname.includes("/reembolsos/pendentes"),
           icon: "heroicons-outline:clock",
           submenus: [],
-        },
-        {
-          id: "reembolsos-historico",
-          href: "/reembolsos/historico",
-          label: "Histórico",
-          active: pathname.includes("/reembolsos/historico"),
-          icon: "heroicons-outline:archive",
-          submenus: [],
-        },
+        }
       ],
     },
     {
