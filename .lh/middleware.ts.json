@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 1,
+            "activePatchIndex": 3,
             "patches": [
                 {
                     "date": 1745097646435,
@@ -12,6 +12,14 @@
                 {
                     "date": 1745097845221,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,6 +27,6 @@\n }\r\n  \r\n export const config = {\r\n   // Match only internationalized pathnames\r\n-  matcher: ['/', '/(ar|en)/:path*']\r\n+  matcher: ['/', '/(ar|en|pt)/:path*']\r\n };\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1745466246543,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,32 +1,15 @@\n+// middleware.ts\r\n import createMiddleware from 'next-intl/middleware';\r\n-import {NextRequest, NextResponse} from 'next/server';\r\n-import {locales} from '@/config';\r\n \r\n-export default async function middleware(request: NextRequest) {\r\n-  \r\n- \r\n+export default createMiddleware({\r\n+  // coloque aqui todos os idiomas que você suporta\r\n+  locales: ['pt', 'en'],\r\n+  defaultLocale: 'pt',\r\n+  // opcional, ativa/desativa a detecção automática de locale\r\n+  localeDetection: false\r\n+});\r\n \r\n-\r\n-  // Step 1: Use the incoming request (example)\r\n-  const defaultLocale = request.headers.get('dashcode-locale') || 'pt';\r\n- \r\n-  // Step 2: Create and call the next-intl middleware (example)\r\n-  const handleI18nRouting = createMiddleware({\r\n-    locales,\r\n-    defaultLocale\r\n-    \r\n-  });\r\n-  const response = handleI18nRouting(request);\r\n- \r\n-  // Step 3: Alter the response (example)\r\n-  response.headers.set('dashcode-locale', defaultLocale);\r\n-\r\n-\r\n\\ No newline at end of file\n- \r\n-  return response;\r\n-}\r\n- \r\n export const config = {\r\n-  // Match only internationalized pathnames\r\n-  matcher: ['/', '/(ar|en|pt)/:path*']\r\n-};\n+  // roda em TODAS as rotas, exceto API, _next e arquivos estáticos (js/css/png etc)\r\n+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']\r\n+};\r\n"
+                },
+                {
+                    "date": 1745466418855,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,15 +1,32 @@\n-// middleware.ts\r\n import createMiddleware from 'next-intl/middleware';\r\n+import {NextRequest, NextResponse} from 'next/server';\r\n+import {locales} from '@/config';\r\n \r\n-export default createMiddleware({\r\n-  // coloque aqui todos os idiomas que você suporta\r\n-  locales: ['pt', 'en'],\r\n-  defaultLocale: 'pt',\r\n-  // opcional, ativa/desativa a detecção automática de locale\r\n-  localeDetection: false\r\n-});\r\n+export default async function middleware(request: NextRequest) {\r\n+  \r\n+ \r\n \r\n+\r\n+  // Step 1: Use the incoming request (example)\r\n+  const defaultLocale = request.headers.get('dashcode-locale') || 'pt';\r\n+ \r\n+  // Step 2: Create and call the next-intl middleware (example)\r\n+  const handleI18nRouting = createMiddleware({\r\n+    locales,\r\n+    defaultLocale\r\n+    \r\n+  });\r\n+  const response = handleI18nRouting(request);\r\n+ \r\n+  // Step 3: Alter the response (example)\r\n+  response.headers.set('dashcode-locale', defaultLocale);\r\n+\r\n+\r\n+ \r\n+  return response;\r\n+}\r\n+ \r\n export const config = {\r\n-  // roda em TODAS as rotas, exceto API, _next e arquivos estáticos (js/css/png etc)\r\n-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']\r\n-};\r\n+  // Match only internationalized pathnames\r\n+  matcher: ['/', '/(ar|en|pt)/:path*']\r\n+};\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1745097646435,

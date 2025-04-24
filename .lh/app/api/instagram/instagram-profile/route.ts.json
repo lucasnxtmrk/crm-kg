@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/api/instagram/instagram-profile/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1745359391536,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1745359391536,
+            "name": "Commit-0",
+            "content": "// app/api/instagram/instagram-profile/route.ts\r\nimport { NextRequest } from 'next/server';\r\n\r\nexport async function GET(req: NextRequest) {\r\n  const username = req.nextUrl.searchParams.get('username');\r\n\r\n  if (!username) {\r\n    return new Response(JSON.stringify({ error: 'Username não informado' }), { status: 400 });\r\n  }\r\n\r\n  try {\r\n    const response = await fetch(`https://www.instagram.com/${username}/?__a=1&__d=dis`, {\r\n      headers: {\r\n        'User-Agent':\r\n          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36',\r\n      },\r\n    });\r\n\r\n    if (!response.ok) {\r\n      throw new Error('Erro ao buscar perfil');\r\n    }\r\n\r\n    const data = await response.json();\r\n\r\n    const user = data.graphql?.user;\r\n    if (!user) {\r\n      return new Response(JSON.stringify({ error: 'Usuário não encontrado' }), { status: 404 });\r\n    }\r\n\r\n    return new Response(\r\n      JSON.stringify({\r\n        profilePic: user.profile_pic_url_hd,\r\n        followers: user.edge_followed_by.count,\r\n      }),\r\n      { status: 200 }\r\n    );\r\n  } catch (error) {\r\n    return new Response(JSON.stringify({ error: 'Falha ao buscar dados do Instagram' }), {\r\n      status: 500,\r\n    });\r\n  }\r\n}\r\n"
+        }
+    ]
+}

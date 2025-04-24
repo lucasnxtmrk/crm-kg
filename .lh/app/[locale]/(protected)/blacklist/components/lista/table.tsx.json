@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 4,
+            "activePatchIndex": 5,
             "patches": [
                 {
                     "date": 1745327132536,
@@ -24,6 +24,10 @@
                 {
                     "date": 1745344603846,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -124,13 +124,13 @@\n       </Table>\r\n \r\n       <TablePagination table={table} />\r\n \r\n-      {/* <InfluenciadorModal\r\n+      <InfluenciadorModal\r\n         open={modalAberto}\r\n         onClose={() => setModalAberto(false)}\r\n         influenciador={influenciadorSelecionado}\r\n-      /> */}\r\n+      />\r\n     </div>\r\n   );\r\n };\r\n \r\n"
+                },
+                {
+                    "date": 1745350675847,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -30,9 +30,9 @@\n \r\n const ListaBlacklist = () => {\r\n   // 🔍 Apenas influenciadores com status === 'banido'\r\n   const data = React.useMemo(\r\n-    () => influenciadores.filter((i) => i.status === 'banido' && i.relacoes?.length),\r\n+    () => influenciadores.filter((i) => i.status === 'banido' && i.recargas?.length),\r\n     []\r\n   );\r\n   const [sorting, setSorting] = useState<SortingState>([]);\r\n   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);\r\n"
                 }
             ],
             "date": 1745327132536,

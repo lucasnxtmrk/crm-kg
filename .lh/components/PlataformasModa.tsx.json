@@ -1,0 +1,18 @@
+{
+    "sourceFile": "components/PlataformasModa.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1745470211940,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1745470211940,
+            "name": "Commit-0",
+            "content": "\"use client\";\r\n\r\nimport React, { useState, useCallback } from \"react\";\r\nimport {\r\n  Dialog,\r\n  DialogContent,\r\n  DialogHeader,\r\n  DialogTitle,\r\n} from \"@/components/ui/dialog\";\r\nimport { Button } from \"@/components/ui/button\";\r\nimport { Input } from \"@/components/ui/input\";\r\nimport { Label } from \"@/components/ui/label\";\r\n\r\ninterface PlataformaForm {\r\n  id: string;\r\n  nome: string;\r\n  imagemUrl: string;\r\n}\r\n\r\ninterface Props {\r\n  open: boolean;\r\n  onClose: () => void;\r\n  onSave: (plataforma: PlataformaForm) => void;\r\n}\r\n\r\nexport default function PlataformasModal({ open, onClose, onSave }: Props) {\r\n  // Estados do formulário\r\n  const [form, setForm] = useState<PlataformaForm>({ id: \"\", nome: \"\", imagemUrl: \"\" });\r\n\r\n  // Callback para fechar o dialog\r\n  const handleOpenChange = useCallback((isOpen: boolean) => {\r\n    if (!isOpen) onClose();\r\n  }, [onClose]);\r\n\r\n  // Evita render se estiver fechado\r\n  if (!open) return null;\r\n\r\n  // Envio do formulário\r\n  const handleSubmit = () => {\r\n    if (!form.id.trim() || !form.nome.trim()) return;\r\n    onSave(form);\r\n    onClose();\r\n    // Reset opcional\r\n    setForm({ id: \"\", nome: \"\", imagemUrl: \"\" });\r\n  };\r\n\r\n  return (\r\n    <Dialog open={open} onOpenChange={handleOpenChange}>\r\n      <DialogContent className=\"max-w-md w-full\">\r\n        <DialogHeader>\r\n          <DialogTitle>Adicionar Plataforma</DialogTitle>\r\n        </DialogHeader>\r\n\r\n        <div className=\"space-y-4\">\r\n          {/* ID da Plataforma */}\r\n          <div className=\"space-y-1.5\">\r\n            <Label htmlFor=\"plataforma-id\">ID</Label>\r\n            <Input\r\n              id=\"plataforma-id\"\r\n              placeholder=\"Ex: blaze\"\r\n              value={form.id}\r\n              onChange={e => setForm({ ...form, id: e.target.value })}\r\n            />\r\n          </div>\r\n\r\n          {/* Nome da Plataforma */}\r\n          <div className=\"space-y-1.5\">\r\n            <Label htmlFor=\"plataforma-nome\">Nome</Label>\r\n            <Input\r\n              id=\"plataforma-nome\"\r\n              placeholder=\"Ex: Blaze\"\r\n              value={form.nome}\r\n              onChange={e => setForm({ ...form, nome: e.target.value })}\r\n            />\r\n          </div>\r\n\r\n          {/* URL da Imagem */}\r\n          <div className=\"space-y-1.5\">\r\n            <Label htmlFor=\"plataforma-imagem\">URL da Imagem</Label>\r\n            <Input\r\n              id=\"plataforma-imagem\"\r\n              placeholder=\"https://.../logo.png\"\r\n              value={form.imagemUrl}\r\n              onChange={e => setForm({ ...form, imagemUrl: e.target.value })}\r\n            />\r\n          </div>\r\n\r\n          {/* Botões de ação */}\r\n          <div className=\"flex justify-end gap-2\">\r\n            <Button variant=\"ghost\" onClick={onClose}>\r\n              Cancelar\r\n            </Button>\r\n            <Button onClick={handleSubmit}>Adicionar Plataforma</Button>\r\n          </div>\r\n        </div>\r\n      </DialogContent>\r\n    </Dialog>\r\n  );\r\n}\r\n"
+        }
+    ]
+}

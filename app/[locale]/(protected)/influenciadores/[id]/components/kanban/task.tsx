@@ -15,14 +15,23 @@ import { Button } from "@/components/ui/button";
 import { MoreVertical, Trash2 } from "lucide-react";
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import { Instagram } from 'lucide-react';
-import type { Influenciador } from '@/lib/influenciadores';
 import { useState } from "react";
 
 type Props = {
-  task: Influenciador;
+  task: InfluenciadorKanban;
   onClick?: () => void;
 };
-
+type InfluenciadorKanban = {
+  id: string;
+  nome: string;
+  imagem?: string;
+  instagram: string;
+  cpf: string;
+  meta: number;
+  atingido: number;
+  reembolso: number;
+  status: string;
+};
 function TaskCard({ task, onClick }: Props) {
   const [open, setOpen] = useState<boolean>(false);
 
@@ -116,16 +125,16 @@ function TaskCard({ task, onClick }: Props) {
               : <span className="italic">Não definido</span>}
           </p>
           <p>
-            Reembolso:{' '}
-            {(task.meta > 0 || task.atingido > 0)
-              ? (
-                <span className={task.reembolso > 0 ? 'text-red-600 font-semibold' : 'text-green-600'}>
-                  R$ {task.reembolso.toLocaleString()}
-                </span>
-              ) : (
-                <span className="italic">Não definido</span>
-              )}
-          </p>
+  Reembolso:{' '}
+  {typeof task.reembolso === 'number'
+    ? (
+      <span className={task.reembolso > 0 ? 'text-red-600 font-semibold' : 'text-green-600'}>
+        R$ {task.reembolso.toLocaleString('pt-BR')}
+      </span>
+    ) : (
+      <span className="italic">Não definido</span>
+    )}
+</p>
 
           <div
             className={cn(

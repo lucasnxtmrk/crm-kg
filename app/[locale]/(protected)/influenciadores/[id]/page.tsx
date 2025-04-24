@@ -19,33 +19,34 @@ export default function PaginaPlataforma() {
 
   return (
     <div className="p-4 space-y-4">
-      <Tabs defaultValue="lista" className="w-full">
+      <Tabs defaultValue="kanban" className="w-full">
         <TabsList className="flex-wrap">
+        <TabsTrigger
+            value="kanban"
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-6"
+          >
+            Kanban
+          </TabsTrigger>
           <TabsTrigger
             value="lista"
             className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-6"
           >
             Lista
           </TabsTrigger>
-          <TabsTrigger
-            value="kanban"
-            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md px-6"
-          >
-            Kanban
-          </TabsTrigger>
-        </TabsList>
 
+        </TabsList>
+        <TabsContent value="kanban">
+  <Card>
+    <KanbanWrapper />
+  </Card>
+        </TabsContent>
         <TabsContent value="lista">
           <Card>
             <ListaInfluenciadores plataformaSlug={plataformaSlug} />
           </Card>
         </TabsContent>
 
-        <TabsContent value="kanban">
-  <Card>
-    <KanbanWrapper />
-  </Card>
-</TabsContent>
+
       </Tabs>
     </div>
   );

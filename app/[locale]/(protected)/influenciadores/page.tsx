@@ -26,9 +26,9 @@ export default function ListaDePlataformas() {
                   <Image
                     src={plataforma.imagem}
                     alt={plataforma.nome}
-                    width={120}
-                    height={120}
-                    className="mx-auto mb-2 w-24 h-24 object-contain"
+                    width={300}
+                    height={300}
+                    className="mx-auto mb-2 w-64 h-32 object-contain"
 />
                   </CardContent>
                 </Card>

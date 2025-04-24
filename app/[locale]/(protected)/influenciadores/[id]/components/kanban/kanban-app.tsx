@@ -17,13 +17,27 @@ import ColumnContainer from './column';
 import TaskCard from './task';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
-import { getInfluenciadoresBySlug, statusKanbanList } from '@/lib/influenciadores';
+import { influenciadores, statusKanbanList } from '@/lib/influenciadores';
+import InfluenciadorModal from '@/components/InfluenciadorModal';
+
+// Tipos
 import type { Influenciador } from '@/lib/influenciadores';
-import InfluenciadorModal from '@/app/[locale]/(protected)/influenciadores/components/InfluenciadorModal';
 
 type Column = {
   id: string;
   title: string;
+};
+
+type InfluenciadorKanban = {
+  id: string;
+  nome: string;
+  imagem?: string;
+  instagram: string;
+  cpf: string;
+  meta: number;
+  atingido: number;
+  status: string;
+  reembolso: number;
 };
 
 const KanBanApp = () => {
@@ -31,25 +45,55 @@ const KanBanApp = () => {
   const params = useParams();
   const plataformaId = params?.id as string;
 
+  // 🔹 Dados filtrados só da plataforma para exibir no Kanban
+  const influenciadoresKanban = useMemo(
+    () => influenciadores.filter((inf) =>
+      inf.recargas.some((rec) => rec.plataformaId === plataformaId)
+    ),
+    [plataformaId]
+  );
+
   const [columns, setColumns] = useState(
     statusKanbanList
       .filter((status) => !status.ocultoNoKanban)
-      .map((status) => ({
-        id: status.id,
-        title: status.title,
-      }))
+      .map((status) => ({ id: status.id, title: status.title }))
   );
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
-  const [tasks, setTasks] = useState<Influenciador[]>(
-    getInfluenciadoresBySlug(plataformaId)
+  const [tasks, setTasks] = useState<InfluenciadorKanban[]>(
+    transformarParaKanban(influenciadoresKanban, plataformaId)
   );
 
-  const [activeColumn, setActiveColumn] = useState<Column | null>(null);
-  const [activeTask, setActiveTask] = useState<Influenciador | null>(null);
+  function transformarParaKanban(influenciadores: Influenciador[], plataformaId: string) {
+    return influenciadores.map((inf) => {
+      const hoje = new Date();
+      const recsDaPlataforma = inf.recargas.filter((r) => r.plataformaId === plataformaId);
+      const ativas = recsDaPlataforma.filter((r) => new Date(r.termino) >= hoje);
 
-  // ✅ Estado do Modal
+      const dados = ativas.length > 0 ? ativas : recsDaPlataforma.slice(-1);
+
+      const metaTotal = dados.reduce((acc, r) => acc + r.meta, 0);
+      const atingidoTotal = dados.reduce((acc, r) => acc + r.atingido, 0);
+      const reembolsoTotal = dados.reduce((acc, r) => acc + (r.meta > r.atingido ? r.meta - r.atingido : 0), 0);
+
+      return {
+        id: inf.id,
+        nome: inf.nome,
+        imagem: inf.imagem,
+        instagram: inf.instagram,
+        cpf: inf.cpf,
+        status: inf.status,
+        meta: metaTotal,
+        atingido: atingidoTotal,
+        reembolso: reembolsoTotal,
+      };
+    });
+  }
+
+  const [activeColumn, setActiveColumn] = useState<Column | null>(null);
+  const [activeTask, setActiveTask] = useState<InfluenciadorKanban | null>(null);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [influenciadorSelecionado, setInfluenciadorSelecionado] = useState<Influenciador | null>(null);
 
@@ -82,7 +126,6 @@ const KanBanApp = () => {
 
     const activeId = active.id;
     const overId = over.id;
-
     if (activeId === overId) return;
 
     const isActiveAColumn = active.data.current?.type === 'Column';
@@ -101,7 +144,6 @@ const KanBanApp = () => {
 
     const activeId = active.id;
     const overId = over.id;
-
     if (activeId === overId) return;
 
     const isActiveATask = active.data.current?.type === 'Task';
@@ -143,8 +185,11 @@ const KanBanApp = () => {
                   column={col}
                   tasks={tasks.filter((task) => task.status === col.id)}
                   onTaskClick={(inf) => {
-                    setInfluenciadorSelecionado(inf);
-                    setModalOpen(true);
+                    const completo = influenciadores.find((i) => i.id === inf.id);
+                    if (completo) {
+                      setInfluenciadorSelecionado(completo);
+                      setModalOpen(true);
+                    }
                   }}
                 />
               ))}
@@ -157,6 +202,7 @@ const KanBanApp = () => {
                 <ColumnContainer
                   column={activeColumn}
                   tasks={tasks.filter((task) => task.status === activeColumn.id)}
+                  onTaskClick={() => {}}
                 />
               )}
               {activeTask && <TaskCard task={activeTask} />}
@@ -166,14 +212,14 @@ const KanBanApp = () => {
         </DndContext>
       </div>
 
-      {/* ✅ Modal do influenciador */}
       <InfluenciadorModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         influenciador={influenciadorSelecionado}
         onUpdate={(atualizado) => {
+          const atualizadoKanban = transformarParaKanban([atualizado], plataformaId)[0];
           setTasks((prev) =>
-            prev.map((i) => (i.id === atualizado.id ? atualizado : i))
+            prev.map((i) => (i.id === atualizado.id ? atualizadoKanban : i))
           );
         }}
       />

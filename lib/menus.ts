@@ -94,7 +94,7 @@ export function getMenuList(pathname: string): Group[] {
       menus: [
         {
           id: "recargas",
-          href: "/financeiro/recargas",
+          href: "/recargas",
           label: "Recargas",
           active: pathname.includes("/financeiro/recargas"),
           icon: "heroicons-outline:currency-dollar",

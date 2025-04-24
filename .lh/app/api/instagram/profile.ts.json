@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/api/instagram/profile.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1745359754687,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1745359754687,
+            "name": "Commit-0",
+            "content": "import { NextApiRequest, NextApiResponse } from 'next';\r\n\r\nexport default async function handler(req: NextApiRequest, res: NextApiResponse) {\r\n  const { username } = req.query;\r\n\r\n  if (!username || typeof username !== 'string') {\r\n    return res.status(400).json({ error: 'Username is required' });\r\n  }\r\n\r\n  try {\r\n    const response = await fetch(`https://instagram-profile1.p.rapidapi.com/getprofile/${username}`, {\r\n      headers: {\r\n        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY as string,\r\n        'X-RapidAPI-Host': 'instagram-profile1.p.rapidapi.com',\r\n      },\r\n    });\r\n\r\n    if (!response.ok) {\r\n      throw new Error('Failed to fetch data');\r\n    }\r\n\r\n    const data = await response.json();\r\n    res.status(200).json(data);\r\n  } catch (error) {\r\n    res.status(500).json({ error: 'Internal Server Error' });\r\n  }\r\n}\r\n"
+        }
+    ]
+}

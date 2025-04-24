@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 1,
+            "activePatchIndex": 2,
             "patches": [
                 {
                     "date": 1744938271450,
@@ -12,6 +12,10 @@
                 {
                     "date": 1745345252608,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -65,22 +65,14 @@\n       id: \"reembolsos\",\r\n       menus: [\r\n         {\r\n           id: \"reembolsos-pendentes\",\r\n-          href: \"/reembolsos/pendentes\",\r\n+          href: \"/reembolsos/\",\r\n           label: \"Pendentes\",\r\n           active: pathname.includes(\"/reembolsos/pendentes\"),\r\n           icon: \"heroicons-outline:clock\",\r\n           submenus: [],\r\n-        },\r\n-        {\r\n-          id: \"reembolsos-historico\",\r\n-          href: \"/reembolsos/historico\",\r\n-          label: \"Histórico\",\r\n-          active: pathname.includes(\"/reembolsos/historico\"),\r\n-          icon: \"heroicons-outline:archive\",\r\n-          submenus: [],\r\n-        },\r\n+        }\r\n       ],\r\n     },\r\n     {\r\n       groupLabel: \"Blacklist\",\r\n"
+                },
+                {
+                    "date": 1745345948637,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -93,9 +93,9 @@\n       id: \"financeiro\",\r\n       menus: [\r\n         {\r\n           id: \"recargas\",\r\n-          href: \"/financeiro/recargas\",\r\n+          href: \"/recargas\",\r\n           label: \"Recargas\",\r\n           active: pathname.includes(\"/financeiro/recargas\"),\r\n           icon: \"heroicons-outline:currency-dollar\",\r\n           submenus: [],\r\n"
                 }
             ],
             "date": 1744938271450,

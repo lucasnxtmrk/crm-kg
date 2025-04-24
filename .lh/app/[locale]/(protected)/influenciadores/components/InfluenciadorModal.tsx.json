@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 80,
+            "activePatchIndex": 81,
             "patches": [
                 {
                     "date": 1745121128070,
@@ -328,6 +328,10 @@
                 {
                     "date": 1745129287186,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,10 +37,10 @@\n     influenciador: Influenciador | null;\r\n     onUpdate?: (updated: Influenciador) => void;\r\n   };\r\n \r\n-const InfluenciadorModal = ({ open, onClose, influenciador }: Props) => {\r\n-  if (!influenciador) return null;\r\n+  const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) => {\r\n+    if (!influenciador) return null;\r\n \r\n   const [plataformasSelecionadas, setPlataformasSelecionadas] = useState<string[]>(\r\n     influenciador.relacoes.map((rel) => rel.plataformaId)\r\n   );\r\n"
+                },
+                {
+                    "date": 1745347231948,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -41,9 +41,9 @@\n   const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) => {\r\n     if (!influenciador) return null;\r\n \r\n   const [plataformasSelecionadas, setPlataformasSelecionadas] = useState<string[]>(\r\n-    influenciador.relacoes.map((rel) => rel.plataformaId)\r\n+    influenciador.recargas.map((rel) => rel.plataformaId)\r\n   );\r\n \r\n   const platformOptions: OptionType[] = plataformas.map((p) => ({\r\n     value: p.id,\r\n@@ -86,9 +86,9 @@\n         ...influenciador,\r\n         status,\r\n         motivoBanimento,\r\n         imagem: previewImage,\r\n-        relacoes: influenciador.relacoes,\r\n+        recargas: influenciador.recargas,\r\n       };\r\n   \r\n       onUpdate?.(updated);\r\n       onClose(); // fecha modal\r\n@@ -221,9 +221,9 @@\n \r\n           {/* 🔸 Coluna Direita - Plataformas */}\r\n           <ScrollArea className=\"max-h-[450px] pr-2\">\r\n             <div className=\"flex flex-col gap-4\">\r\n-              {influenciador.relacoes\r\n+              {influenciador.recargas\r\n                 .filter((rel) => plataformasSelecionadas.includes(rel.plataformaId))\r\n                 .map((rel) => {\r\n                   const plataforma = plataformas.find((p) => p.id === rel.plataformaId);\r\n \r\n"
                 }
             ],
             "date": 1745121128070,

@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 11,
+            "activePatchIndex": 19,
             "patches": [
                 {
                     "date": 1744937824449,
@@ -52,6 +52,38 @@
                 {
                     "date": 1744941947311,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,11 +25,11 @@\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n-                    width={64}\r\n-                    height={64}\r\n-                    className=\"mx-auto mb-2 w-32 h-32 object-contain\"\r\n+                    width={120}\r\n+                    height={120}\r\n+                    className=\"mx-auto mb-2 w-24 h-24 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1745470813234,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,14 +23,13 @@\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n-                    src={plataforma.imagem}\r\n-                    alt={plataforma.nome}\r\n-                    width={120}\r\n-                    height={120}\r\n-                    className=\"mx-auto mb-2 w-24 h-24 object-contain\"\r\n-/>\r\n+                        src={plataforma.imagem}\r\n+                        alt={plataforma.nome}\r\n+                        fill                     // faz o <Image> preencher este <div>\r\n+                        className=\"object-cover\"// cobre todo o espaço, cortando o excesso\r\n+                      />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n             ))}\r\n"
+                },
+                {
+                    "date": 1745470823376,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -26,9 +26,9 @@\n                   <Image\r\n                         src={plataforma.imagem}\r\n                         alt={plataforma.nome}\r\n                         fill                     // faz o <Image> preencher este <div>\r\n-                        className=\"object-cover\"// cobre todo o espaço, cortando o excesso\r\n+                        className=\"\"// cobre todo o espaço, cortando o excesso\r\n                       />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1745470833006,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,13 +23,14 @@\n               >\r\n                 <Card className=\"hover:shadow-lg transition cursor-pointer\">\r\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n-                        src={plataforma.imagem}\r\n-                        alt={plataforma.nome}\r\n-                        fill                     // faz o <Image> preencher este <div>\r\n-                        className=\"\"// cobre todo o espaço, cortando o excesso\r\n-                      />\r\n+                    src={plataforma.imagem}\r\n+                    alt={plataforma.nome}\r\n+                    width={120}\r\n+                    height={120}\r\n+                    className=\"mx-auto mb-2 w-24 h-24 object-contain\"\r\n+/>\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n             ))}\r\n"
+                },
+                {
+                    "date": 1745470838588,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,10 +25,10 @@\n                   <CardContent className=\"p-6 text-center space-y-2\">\r\n                   <Image\r\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n-                    width={120}\r\n-                    height={120}\r\n+                    width={300}\r\n+                    height={300}\r\n                     className=\"mx-auto mb-2 w-24 h-24 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n"
+                },
+                {
+                    "date": 1745470861231,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n                     width={300}\r\n                     height={300}\r\n-                    className=\"mx-auto mb-2 w-24 h-24 object-contain\"\r\n+                    className=\"mx-auto mb-2 w-48 h-24 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1745470868854,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n                     width={300}\r\n                     height={300}\r\n-                    className=\"mx-auto mb-2 w-48 h-24 object-contain\"\r\n+                    className=\"mx-auto mb-2 w-64 h-24 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1745470880199,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n                     width={300}\r\n                     height={300}\r\n-                    className=\"mx-auto mb-2 w-64 h-24 object-contain\"\r\n+                    className=\"mx-auto mb-2 w-64 h-12 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
+                },
+                {
+                    "date": 1745470887503,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,9 +27,9 @@\n                     src={plataforma.imagem}\r\n                     alt={plataforma.nome}\r\n                     width={300}\r\n                     height={300}\r\n-                    className=\"mx-auto mb-2 w-64 h-12 object-contain\"\r\n+                    className=\"mx-auto mb-2 w-64 h-32 object-contain\"\r\n />\r\n                   </CardContent>\r\n                 </Card>\r\n               </Link>\r\n"
                 }
             ],
             "date": 1744937824449,

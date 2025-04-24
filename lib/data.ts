@@ -20,24 +20,24 @@ export const getUserByEmail = (email: string) => {
 // 🗂️ Plataformas disponíveis no sistema
 export const plataformas = [
   {
-    id: "blaze",
-    nome: "Blaze",
-    imagem: "/images/plataformas/blaze.png", // opcional
+    id: "genio777",
+    nome: "Gênio777",
+    imagem: "/images/plataformas/genio777.png", // opcional
   },
   {
-    id: "betano",
-    nome: "Betano",
-    imagem: "/images/plataformas/betano.png",
+    id: "pgcoelho",
+    nome: "PG-COELHO",
+    imagem: "/images/plataformas/pgcoelho.png",
   },
   {
-    id: "stake",
-    nome: "Stake",
-    imagem: "/images/plataformas/stake.png",
+    id: "piupiu",
+    nome: "Piu-piu PQ",
+    imagem: "/images/plataformas/piupiu.png",
   },
   {
-    id: "sportingbet",
-    nome: "Sportingbet",
-    imagem: "/images/plataformas/sportingbet.png",
+    id: "sergipeboi",
+    nome: "Sergipe Boi",
+    imagem: "/images/plataformas/sergipeboi.png",
   },
 ];
 

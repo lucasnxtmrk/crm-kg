@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 24,
+            "activePatchIndex": 27,
             "patches": [
                 {
                     "date": 1744940463076,
@@ -104,6 +104,18 @@
                 {
                     "date": 1745128957102,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -130,12 +130,12 @@\n       <TablePagination table={table} />\r\n \r\n       {/* Modal do Influenciador */}\r\n       <InfluenciadorModal\r\n-        open={modalAberto}\r\n-        onClose={() => setModalAberto(false)}\r\n-        influenciador={influenciadorSelecionado}\r\n-      />\r\n+  open={modalAberto}\r\n+  onClose={() => setModalAberto(false)}\r\n+  influenciador={influenciadorSelecionado}\r\n+/>\r\n     </div>\r\n   );\r\n };\r\n \r\n"
+                },
+                {
+                    "date": 1745347703143,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -25,9 +25,9 @@\n } from '@/components/ui/table';\r\n import TablePagination from './table-pagination';\r\n import { getInfluenciadoresBySlug, Influenciador } from '@/lib/influenciadores';\r\n import { useMemo, useState } from 'react';\r\n-import InfluenciadorModal from '../../../components/InfluenciadorModal';\r\n+import InfluenciadorModal from '@/components/InfluenciadorModal';\r\n interface Props {\r\n   plataformaSlug: string;\r\n }\r\n \r\n"
+                },
+                {
+                    "date": 1745357099920,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,9 +23,9 @@\n   TableHeader,\r\n   TableRow,\r\n } from '@/components/ui/table';\r\n import TablePagination from './table-pagination';\r\n-import { getInfluenciadoresBySlug, Influenciador } from '@/lib/influenciadores';\r\n+import { getInfluenciadoresBySlug, Influenciador, influenciadores } from '@/lib/influenciadores';\r\n import { useMemo, useState } from 'react';\r\n import InfluenciadorModal from '@/components/InfluenciadorModal';\r\n interface Props {\r\n   plataformaSlug: string;\r\n@@ -47,10 +47,13 @@\n   const [modalAberto, setModalAberto] = useState(false);\r\n   const [influenciadorSelecionado, setInfluenciadorSelecionado] = useState<Influenciador | null>(null);\r\n \r\n   const handleView = (inf: Influenciador) => {\r\n-    setInfluenciadorSelecionado(inf);\r\n-    setModalAberto(true);\r\n+    const completo = influenciadores.find((i) => i.id === inf.id);\r\n+    if (completo) {\r\n+      setInfluenciadorSelecionado(completo);\r\n+      setModalAberto(true);\r\n+    }\r\n   };\r\n \r\n   const columns = getColumns({ onView: handleView });\r\n \r\n"
+                },
+                {
+                    "date": 1745510783675,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -34,9 +34,9 @@\n const ListaInfluenciadores = ({ plataformaSlug }: Props) => {\r\n   const data = useMemo(() => getInfluenciadoresBySlug(plataformaSlug), [plataformaSlug]);\r\n \r\n   const [sorting, setSorting] = useState<SortingState>([]);\r\n-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);\r\n+  const [columnFilters, setColumnFilters] = useState  <ColumnFiltersState>([]);\r\n   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});\r\n   const [rowSelection, setRowSelection] = useState({});\r\n   const [pagination, setPagination] = useState({\r\n     pageIndex: 0,\r\n"
                 }
             ],
             "date": 1744940463076,

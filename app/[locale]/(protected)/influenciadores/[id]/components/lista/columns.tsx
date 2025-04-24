@@ -4,11 +4,33 @@ import { ColumnDef } from '@tanstack/react-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { Eye, SquarePen, Trash2 } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { Influenciador } from '@/lib/influenciadores';
 
+const hojeTimestamp = new Date().getTime();
+
+function getRecargaResumo(recargas: Influenciador['recargas']) {
+  const ativas = recargas.filter((r) => new Date(r.termino).getTime() >= hojeTimestamp);
+
+  if (ativas.length > 0) {
+    return ativas.reduce(
+      (acc, r) => {
+        acc.meta += r.meta;
+        acc.atingido += r.atingido;
+        return acc;
+      },
+      { meta: 0, atingido: 0 }
+    );
+  } else {
+    const ultima = [...recargas].sort((a, b) => b.inicio.localeCompare(a.inicio))[0];
+    return {
+      meta: ultima?.meta || 0,
+      atingido: ultima?.atingido || 0,
+    };
+  }
+}
 
 type Props = {
   onView: (influenciador: Influenciador) => void;
@@ -50,9 +72,7 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
     ),
     cell: ({ row }) => {
       const data = row.original.dataCadastro;
-      
       if (!data) return <span className="text-muted-foreground">Sem data</span>;
-    
       const [ano, mes, dia] = data.split('-');
       return <span>{`${dia}/${mes}/${ano}`}</span>;
     },
@@ -102,58 +122,46 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
     id: 'meta',
     header: 'Meta',
     cell: ({ row }) => {
-      const rel = row.original.relacoes[0];
-      return <span>R$ {rel?.meta?.toLocaleString('pt-BR') || '0'}</span>;
+      const { meta } = getRecargaResumo(row.original.recargas);
+      return <span>R$ {meta.toLocaleString('pt-BR')}</span>;
     },
   },
   {
     id: 'atingido',
     header: 'Atingido',
     cell: ({ row }) => {
-      const rel = row.original.relacoes[0];
-      return <span>R$ {rel?.atingido?.toLocaleString('pt-BR') || '0'}</span>;
+      const { atingido } = getRecargaResumo(row.original.recargas);
+      return <span>R$ {atingido.toLocaleString('pt-BR')}</span>;
     },
   },
   {
     id: 'reembolso',
     header: 'Reembolso',
     cell: ({ row }) => {
-      const rel = row.original.relacoes[0];
-      const meta = rel?.meta || 0;
-      const atingido = rel?.atingido || 0;
+      const { meta, atingido } = getRecargaResumo(row.original.recargas);
       const reembolso = meta > atingido ? meta - atingido : 0;
-  
       const reembolsoClass =
         reembolso > 0 ? 'text-red-500 font-medium' : 'text-green-600 font-medium';
-  
       return <span className={reembolsoClass}>R$ {reembolso.toLocaleString('pt-BR')}</span>;
     },
   },
-  
   {
     id: 'statusMeta',
-    header: () => (
-      <div className="w-full text-center font-medium">Status da Meta</div>
-    ),
+    header: () => <div className="w-full text-center font-medium">Status da Meta</div>,
     cell: ({ row }) => {
-      const rel = row.original.relacoes[0];
-      const meta = rel?.meta || 0;
-      const atingido = rel?.atingido || 0;
-  
+      const { meta, atingido } = getRecargaResumo(row.original.recargas);
       const statusLabel =
         meta === 0 && atingido === 0
           ? 'Meta indefinida'
           : atingido >= meta
           ? 'Meta batida'
           : 'Meta pendente';
-  
       const statusClass =
         meta === 0 && atingido === 0
           ? 'bg-muted text-muted-foreground'
           : atingido >= meta
           ? 'bg-green-500 text-white'
           : 'bg-yellow-400 text-yellow-900';
-  
       return (
         <div
           className={cn(
@@ -166,7 +174,6 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
       );
     },
   },
-  
   {
     id: 'actions',
     header: 'Ações',
@@ -175,28 +182,11 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="outline"
-                onClick={() => onView(row.original)}
-              >
+              <Button size="icon" variant="outline" onClick={() => onView(row.original)}>
                 <Eye className="w-4 h-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Visualizar</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
-        {/* Apagando o botão "Editar" */}
-
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button size="icon" variant="outline">
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Excluir</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>

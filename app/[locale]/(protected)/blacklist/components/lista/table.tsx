@@ -31,7 +31,7 @@ import InfluenciadorModal from '@/components/InfluenciadorModal';
 const ListaBlacklist = () => {
   // 🔍 Apenas influenciadores com status === 'banido'
   const data = React.useMemo(
-    () => influenciadores.filter((i) => i.status === 'banido' && i.relacoes?.length),
+    () => influenciadores.filter((i) => i.status === 'banido' && i.recargas?.length),
     []
   );
   const [sorting, setSorting] = useState<SortingState>([]);

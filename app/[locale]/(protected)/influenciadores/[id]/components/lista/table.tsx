@@ -24,9 +24,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import TablePagination from './table-pagination';
-import { getInfluenciadoresBySlug, Influenciador } from '@/lib/influenciadores';
+import { getInfluenciadoresBySlug, Influenciador, influenciadores } from '@/lib/influenciadores';
 import { useMemo, useState } from 'react';
-import InfluenciadorModal from '../../../components/InfluenciadorModal';
+import InfluenciadorModal from '@/components/InfluenciadorModal';
 interface Props {
   plataformaSlug: string;
 }
@@ -35,7 +35,7 @@ const ListaInfluenciadores = ({ plataformaSlug }: Props) => {
   const data = useMemo(() => getInfluenciadoresBySlug(plataformaSlug), [plataformaSlug]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState  <ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const [pagination, setPagination] = useState({
@@ -48,8 +48,11 @@ const ListaInfluenciadores = ({ plataformaSlug }: Props) => {
   const [influenciadorSelecionado, setInfluenciadorSelecionado] = useState<Influenciador | null>(null);
 
   const handleView = (inf: Influenciador) => {
-    setInfluenciadorSelecionado(inf);
-    setModalAberto(true);
+    const completo = influenciadores.find((i) => i.id === inf.id);
+    if (completo) {
+      setInfluenciadorSelecionado(completo);
+      setModalAberto(true);
+    }
   };
 
   const columns = getColumns({ onView: handleView });
