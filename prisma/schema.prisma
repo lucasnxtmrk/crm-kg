@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cadastros_influenciadores {
+  @@map("cadastros_influenciadores")
+
+  id                          String          @id @db.Uuid
+  influenciador_id            String          @db.Uuid
+  plataforma_id               String          @db.VarChar(50)
+  influenciador_plataforma_id String          @db.VarChar(100)
+
+  influenciadores             influenciadores @relation(fields: [influenciador_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  plataformas                 plataformas     @relation(fields: [plataforma_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  recargas                    recargas[]
+}
+
+model influenciadores {
+  @@map("influenciadores")
+
+  id                        String                      @id @db.Uuid
+  nome                      String                      @db.VarChar(255)
+  imagem                    String?
+  instagram                 String                      @db.VarChar(100)
+  email                     String?                     @db.VarChar(255)
+  telefone                  String?                     @db.VarChar(20)
+  data_cadastro             DateTime                    @db.Date
+  cpf                       String                      @unique @db.VarChar(20)
+  chavepix                  String?                     @db.VarChar(255)
+  status                    String                      @db.VarChar(20)
+  motivo_banimento          String?
+  cadastros_influenciadores cadastros_influenciadores[]
+}
+
+model plataformas {
+  @@map("plataformas")
+
+  id                        String                      @id @db.VarChar(50)
+  nome                      String                      @db.VarChar(255)
+  imagem                    String?
+  cor                       String
+
+  cadastros_influenciadores cadastros_influenciadores[]
+}
+
+model recargas {
+  @@map("recargas")
+
+  id                        String                    @id @db.Uuid
+  cadastro_id               String                    @db.Uuid
+  inicio                    DateTime                  @db.Date
+  termino                   DateTime                  @db.Date
+  salario                   Decimal                   @db.Decimal(10, 2)
+  meta                      Decimal                   @db.Decimal(10, 2)
+  atingido                  Decimal                   @db.Decimal(10, 2)
+  reembolso                 Decimal                   @db.Decimal(10, 2)
+  depositantes_meta         Int
+  depositantes_atingido     Int
+  tipo                      String                    @db.VarChar(20)
+  status_meta               String                    @db.VarChar(20)
+  reembolso_status          String                    @db.VarChar(20)
+
+  cadastros_influenciadores cadastros_influenciadores @relation(fields: [cadastro_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}

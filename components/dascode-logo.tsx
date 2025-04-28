@@ -9,7 +9,7 @@ const DashCodeLogo = (props: IconProps) => {
  preserveAspectRatio="xMidYMid meet">
 
 <g transform="translate(0.000000,1024.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
+fill="CurrentColor" stroke="none">
 <path d="M415 10116 c-149 -36 -262 -153 -294 -306 -9 -42 -11 -1182 -9 -4726
 l3 -4670 38 -76 c57 -116 152 -191 275 -217 76 -16 9308 -16 9384 0 149 32
 264 142 304 293 12 43 14 794 14 4706 0 3912 -2 4663 -14 4706 -40 152 -154

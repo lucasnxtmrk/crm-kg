@@ -17,11 +17,10 @@ import ColumnContainer from './column';
 import TaskCard from './task';
 import { createPortal } from 'react-dom';
 import { useTranslations } from 'next-intl';
-import { influenciadores, statusKanbanList } from '@/lib/influenciadores';
 import InfluenciadorModal from '@/components/InfluenciadorModal';
-
-// Tipos
-import type { Influenciador } from '@/lib/influenciadores';
+import { statusKanbanList, Recarga } from '@/lib/types';
+import { Influenciador } from '@/lib/types';
+import { useInfluenciadores } from '@/hooks/useInfluenciadores';
 
 type Column = {
   id: string;
@@ -38,6 +37,8 @@ type InfluenciadorKanban = {
   atingido: number;
   status: string;
   reembolso: number;
+  tipo: "valor" | "depositantes";
+  status_meta: "completo" | "incompleto" | "indefinido";
 };
 
 const KanBanApp = () => {
@@ -45,13 +46,7 @@ const KanBanApp = () => {
   const params = useParams();
   const plataformaId = params?.id as string;
 
-  // 🔹 Dados filtrados só da plataforma para exibir no Kanban
-  const influenciadoresKanban = useMemo(
-    () => influenciadores.filter((inf) =>
-      inf.recargas.some((rec) => rec.plataformaId === plataformaId)
-    ),
-    [plataformaId]
-  );
+  const { influenciadores, loading, refetch } = useInfluenciadores();
 
   const [columns, setColumns] = useState(
     statusKanbanList
@@ -61,22 +56,34 @@ const KanBanApp = () => {
 
   const columnsId = useMemo(() => columns.map((col) => col.id), [columns]);
 
-  const [tasks, setTasks] = useState<InfluenciadorKanban[]>(
-    transformarParaKanban(influenciadoresKanban, plataformaId)
-  );
+  const influenciadoresKanban = useMemo(() => {
+    return influenciadores.filter((inf) =>
+      inf.cadastros_influenciadores?.some((cad) => cad.plataforma_id === plataformaId)
+    );
+  }, [influenciadores, plataformaId]);
 
-  function transformarParaKanban(influenciadores: Influenciador[], plataformaId: string) {
-    return influenciadores.map((inf) => {
+  const tasks = useMemo(() => {
+    return influenciadoresKanban.map((inf) => {
       const hoje = new Date();
-      const recsDaPlataforma = inf.recargas.filter((r) => r.plataformaId === plataformaId);
+      const recsDaPlataforma = inf.cadastros_influenciadores
+        ?.filter((c) => c.plataforma_id === plataformaId)
+        .flatMap((cad) => cad.recargas) || [];
+  
       const ativas = recsDaPlataforma.filter((r) => new Date(r.termino) >= hoje);
-
       const dados = ativas.length > 0 ? ativas : recsDaPlataforma.slice(-1);
-
-      const metaTotal = dados.reduce((acc, r) => acc + r.meta, 0);
-      const atingidoTotal = dados.reduce((acc, r) => acc + r.atingido, 0);
-      const reembolsoTotal = dados.reduce((acc, r) => acc + (r.meta > r.atingido ? r.meta - r.atingido : 0), 0);
-
+  
+      const ultimaRecarga = dados.length > 0 ? dados[dados.length - 1] : undefined;
+  
+      const metaTotal = dados.reduce((acc, r) => acc + (r.tipo === "valor" ? Number(r.meta) : r.depositantes_meta || 0), 0);
+      const atingidoTotal = dados.reduce((acc, r) => acc + (r.tipo === "valor" ? Number(r.atingido) : r.depositantes_atingido || 0), 0);
+  
+      const reembolsoTotal = recsDaPlataforma
+        .filter(r => 
+          new Date(r.termino) >= hoje && 
+          r.reembolso_status === "pendente"
+        )
+        .reduce((acc, r) => acc + Number(r.reembolso || 0), 0);
+  
       return {
         id: inf.id,
         nome: inf.nome,
@@ -87,9 +94,13 @@ const KanBanApp = () => {
         meta: metaTotal,
         atingido: atingidoTotal,
         reembolso: reembolsoTotal,
+        tipo: ultimaRecarga?.tipo || "valor",
+        status_meta: ultimaRecarga?.status_meta || "indefinido",
       };
     });
-  }
+  }, [influenciadoresKanban, plataformaId]);
+  
+  
 
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
   const [activeTask, setActiveTask] = useState<InfluenciadorKanban | null>(null);
@@ -139,46 +150,20 @@ const KanBanApp = () => {
   }
 
   function onDragOver(event: DragOverEvent) {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = active.id;
-    const overId = over.id;
-    if (activeId === overId) return;
-
-    const isActiveATask = active.data.current?.type === 'Task';
-    const isOverATask = over.data.current?.type === 'Task';
-    const isOverAColumn = over.data.current?.type === 'Column';
-
-    if (!isActiveATask) return;
-
-    if (isOverATask || isOverAColumn) {
-      setTasks((prev) =>
-        prev.map((task) =>
-          task.id === activeId
-            ? {
-                ...task,
-                status: isOverATask && over.data.current
-                  ? over.data.current.task.status
-                  : overId,
-              }
-            : task
-        )
-      );
-    }
+    // Não precisa fazer nada por enquanto
   }
 
   return (
     <>
-      <div className="">
+      <div className="pb-4 pr-4 pl-4">
         <DndContext
           sensors={sensors}
           onDragStart={onDragStart}
           onDragEnd={onDragEnd}
           onDragOver={onDragOver}
         >
-          <div className="flex gap-4 overflow-x-auto no-scrollbar">
-            <SortableContext items={columnsId}>
+<div className="flex gap-4 overflow-x-auto no-scrollbar">
+<SortableContext items={columnsId}>
               {columns.map((col) => (
                 <ColumnContainer
                   key={col.id}
@@ -216,14 +201,16 @@ const KanBanApp = () => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         influenciador={influenciadorSelecionado}
-        onUpdate={(atualizado) => {
-          const atualizadoKanban = transformarParaKanban([atualizado], plataformaId)[0];
-          setTasks((prev) =>
-            prev.map((i) => (i.id === atualizado.id ? atualizadoKanban : i))
-          );
+        onUpdate={async (updated) => {
+          await refetch(); // 🔥 Atualiza os influenciadores
+          const atualizado = influenciadores.find((i) => i.id === updated.id);
+          if (atualizado) {
+            setInfluenciadorSelecionado(atualizado);
+          }
         }}
       />
     </>
   );
 };
+
 export default KanBanApp;

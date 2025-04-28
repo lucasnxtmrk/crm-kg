@@ -2,65 +2,44 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { Eye, Trash2 } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { Influenciador } from '@/lib/influenciadores';
+import { Influenciador } from '@/lib/types';
 
 const hojeTimestamp = new Date().getTime();
-
-function getRecargaResumo(recargas: Influenciador['recargas']) {
-  const ativas = recargas.filter((r) => new Date(r.termino).getTime() >= hojeTimestamp);
-
-  if (ativas.length > 0) {
-    return ativas.reduce(
-      (acc, r) => {
-        acc.meta += r.meta;
-        acc.atingido += r.atingido;
-        return acc;
-      },
-      { meta: 0, atingido: 0 }
-    );
-  } else {
-    const ultima = [...recargas].sort((a, b) => b.inicio.localeCompare(a.inicio))[0];
-    return {
-      meta: ultima?.meta || 0,
-      atingido: ultima?.atingido || 0,
-    };
+function getRecargaResumo(
+  recargas: Influenciador['cadastros_influenciadores'][number]['recargas']
+) {
+  if (!recargas || recargas.length === 0) {
+    return { meta: 0, atingido: 0, tipo: "valor", status_meta: "indefinido" };
   }
+
+  const hoje = new Date().getTime();
+  const ativas = recargas.filter((r) => new Date(r.termino).getTime() >= hoje);
+
+  const selecionadas = ativas.length > 0 ? ativas : recargas.slice(-1);
+
+  const meta = selecionadas.reduce((acc, r) => acc + (r.tipo === "valor" ? (r.meta || 0) : (r.depositantes_meta || 0)), 0);
+  const atingido = selecionadas.reduce((acc, r) => acc + (r.tipo === "valor" ? (r.atingido || 0) : (r.depositantes_atingido || 0)), 0);
+  const tipo = selecionadas[0]?.tipo || "valor";
+  const status_meta = selecionadas[0]?.status_meta || "indefinido";
+
+  return { meta, atingido, tipo, status_meta };
 }
+
+
+
 
 type Props = {
   onView: (influenciador: Influenciador) => void;
+  plataformaId: string;
 };
 
-export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
+export const getColumns = ({ onView, plataformaId }: Props): ColumnDef<Influenciador>[] => [
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Selecionar tudo"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Selecionar linha"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'dataCadastro',
+    accessorKey: 'data_cadastro',
     header: ({ column }) => (
       <button
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
@@ -71,10 +50,17 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
       </button>
     ),
     cell: ({ row }) => {
-      const data = row.original.dataCadastro;
+      const data = row.original.data_cadastro;
       if (!data) return <span className="text-muted-foreground">Sem data</span>;
-      const [ano, mes, dia] = data.split('-');
-      return <span>{`${dia}/${mes}/${ano}`}</span>;
+
+      const dataFormatada = typeof data === 'string' ? new Date(data) : data;
+      return (
+        <span>
+          {String(dataFormatada.getDate()).padStart(2, '0')}/
+          {String(dataFormatada.getMonth() + 1).padStart(2, '0')}/
+          {dataFormatada.getFullYear()}
+        </span>
+      );
     },
   },
   {
@@ -92,8 +78,9 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
       return (
         <div className="flex items-center gap-3">
           <Avatar className="w-8 h-8">
-            {imagem ? <AvatarImage src={imagem} /> : <AvatarFallback>INF</AvatarFallback>}
-          </Avatar>
+  <AvatarImage src={imagem} />
+  <AvatarFallback>{nome.charAt(0)}</AvatarFallback>
+</Avatar>
           <span>{nome}</span>
         </div>
       );
@@ -102,16 +89,24 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
   {
     accessorKey: 'instagram',
     header: 'Instagram',
-    cell: ({ row }) => (
-      <a
-        href={row.original.instagram}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline text-sm"
-      >
-        @{row.original.instagram.replace('https://instagram.com/', '')}
-      </a>
-    ),
+    cell: ({ row }) => {
+      const insta = row.original.instagram;
+      const handle = insta?.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '') || '';
+      const url = insta?.startsWith('http')
+        ? insta
+        : `https://instagram.com/${handle}`;
+
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline text-sm"
+        >
+          @{handle}
+        </a>
+      );
+    },
   },
   {
     accessorKey: 'cpf',
@@ -122,26 +117,51 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
     id: 'meta',
     header: 'Meta',
     cell: ({ row }) => {
-      const { meta } = getRecargaResumo(row.original.recargas);
-      return <span>R$ {meta.toLocaleString('pt-BR')}</span>;
+      const cadastro = row.original.cadastros_influenciadores?.find(c => c.plataforma_id === plataformaId);
+      const recargas = cadastro?.recargas || [];
+      console.log('Recargas desse cadastro:', recargas); // 👈 aqui também
+      
+      const { meta, tipo } = getRecargaResumo(recargas);
+  
+      if (recargas.length === 0) {
+        return <span className="italic">Não definida</span>;
+      }
+  
+      return tipo === "valor"
+  ? `R$ ${Number(meta).toLocaleString('pt-BR')}`
+  : `${meta} depositantes`;
     },
   },
+  
   {
     id: 'atingido',
     header: 'Atingido',
     cell: ({ row }) => {
-      const { atingido } = getRecargaResumo(row.original.recargas);
-      return <span>R$ {atingido.toLocaleString('pt-BR')}</span>;
+      const cadastro = row.original.cadastros_influenciadores?.find(c => c.plataforma_id === plataformaId);
+      const recargas = cadastro?.recargas || [];
+      const { atingido, tipo } = getRecargaResumo(recargas);
+  
+      if (recargas.length === 0) {
+        return <span className="italic">Não definido</span>;
+      }
+  
+      return tipo === "valor"
+  ? `R$ ${Number(atingido).toLocaleString('pt-BR')}`
+  : `${atingido} depositantes`;
     },
   },
+  
   {
     id: 'reembolso',
     header: 'Reembolso',
     cell: ({ row }) => {
-      const { meta, atingido } = getRecargaResumo(row.original.recargas);
+      const cadastro = row.original.cadastros_influenciadores?.find(c => c.plataforma_id === plataformaId);
+      const recargas = cadastro?.recargas || [];
+            const { meta, atingido } = getRecargaResumo(recargas);
       const reembolso = meta > atingido ? meta - atingido : 0;
-      const reembolsoClass =
-        reembolso > 0 ? 'text-red-500 font-medium' : 'text-green-600 font-medium';
+      const reembolsoClass = reembolso > 0
+        ? 'text-red-500 font-medium'
+        : 'text-green-600 font-medium';
       return <span className={reembolsoClass}>R$ {reembolso.toLocaleString('pt-BR')}</span>;
     },
   },
@@ -149,31 +169,34 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
     id: 'statusMeta',
     header: () => <div className="w-full text-center font-medium">Status da Meta</div>,
     cell: ({ row }) => {
-      const { meta, atingido } = getRecargaResumo(row.original.recargas);
-      const statusLabel =
-        meta === 0 && atingido === 0
-          ? 'Meta indefinida'
-          : atingido >= meta
-          ? 'Meta batida'
-          : 'Meta pendente';
-      const statusClass =
-        meta === 0 && atingido === 0
-          ? 'bg-muted text-muted-foreground'
-          : atingido >= meta
-          ? 'bg-green-500 text-white'
-          : 'bg-yellow-400 text-yellow-900';
+      const cadastro = row.original.cadastros_influenciadores?.find(c => c.plataforma_id === plataformaId);
+const recargas = cadastro?.recargas || [];
+      const { status_meta } = getRecargaResumo(recargas);
+  
+      let label = "Meta indefinida";
+      let statusClass = "bg-muted text-muted-foreground";
+  
+      if (status_meta === "completo") {
+        label = "Meta batida";
+        statusClass = "bg-green-500 text-white";
+      } else if (status_meta === "incompleto") {
+        label = "Meta pendente";
+        statusClass = "bg-yellow-400 text-yellow-900";
+      }
+  
       return (
         <div
           className={cn(
-            'w-[140px] mx-auto flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium text-center whitespace-nowrap transition',
+            "w-[140px] mx-auto flex items-center justify-center px-2 py-1 rounded-full text-xs font-medium text-center whitespace-nowrap transition",
             statusClass
           )}
         >
-          {statusLabel}
+          {label}
         </div>
       );
     },
   },
+  
   {
     id: 'actions',
     header: 'Ações',

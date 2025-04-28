@@ -50,35 +50,54 @@ const SidebarNav = ({ menuList }: { menuList: Group[] }) => {
         <nav className="mt-6 h-full w-full ">
           <ul className=" h-full  space-y-1.5 flex flex-col  items-start  px-4 pb-8 ">
 
-            {data?.menus.map(
-              ({ submenus }, index) =>
-                submenus?.map(({ href, label, active, icon, children: subChildren }, i) => (
-                  <li key={`double-menu-index-${i}`} className=' w-full '>
-                    {subChildren?.length === 0 ? (
-                      <Button asChild color={active ? 'default' : 'secondary'} variant={active ? 'default' : 'ghost'} fullWidth className='  h-10 capitalize justify-start md:px-3 px-3 '>
-                        <Link href={href}>
-                          {icon && (
-                            <Icon icon={icon} className="h-5 w-5 me-2" />
-                          )}
+          {data?.menus.map(
+  ({ submenus }, index) =>
+    submenus?.map(({ href, label, active, icon, onClick, children: subChildren }, i) => (
+      <li key={`double-menu-index-${i}`} className='w-full'>
+        {subChildren?.length === 0 ? (
+          onClick ? (
+            <Button
+              onClick={onClick}
+              color={active ? 'default' : 'secondary'}
+              variant={active ? 'default' : 'ghost'}
+              fullWidth
+              className='h-10 capitalize justify-start md:px-3 px-3'
+            >
+              {icon && (
+                <Icon icon={icon} className="h-5 w-5 me-2" />
+              )}
+              <p>{label}</p>
+            </Button>
+          ) : (
+            <Button
+              asChild
+              color={active ? 'default' : 'secondary'}
+              variant={active ? 'default' : 'ghost'}
+              fullWidth
+              className='h-10 capitalize justify-start md:px-3 px-3'
+            >
+              <Link href={href}>
+                {icon && (
+                  <Icon icon={icon} className="h-5 w-5 me-2" />
+                )}
+                <p>{label}</p>
+              </Link>
+            </Button>
+          )
+        ) : (
+          subChildren && (
+            <CollapseMenuButton2
+              icon={icon}
+              label={label}
+              active={active}
+              submenus={subChildren}
+            />
+          )
+        )}
+      </li>
+    ))
+)}
 
-                          <p>
-                            {label}
-                          </p>
-                        </Link>
-                      </Button>
-                    ) : (
-                      subChildren &&
-                      <CollapseMenuButton2
-                        icon={icon}
-                        label={label}
-                        active={active}
-                        submenus={subChildren}
-                      />
-                    )}
-
-                  </li>
-                ))
-            )}
 
           </ul>
         </nav>

@@ -44,7 +44,10 @@ const SidebarContent = ({ children }: { children: React.ReactNode }) => {
                 'w-28': config.sidebar === 'compact',
                 "w-[248px]": hoverConfig.hovered
 
-            })}>
+            })} style={{
+                backgroundColor: "#230621", // 👈 COR PADRÃO aqui
+                color: config.sidebarTheme === "dark" ? "white" : "black", // 👈 Texto ajustado se quiser também
+              }}>
             <div className=" relative  flex flex-col h-full  ">
                 {config.sidebarBgImage !== undefined && (
                     <div

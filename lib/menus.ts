@@ -16,13 +16,15 @@ export type Submenu = {
 };
 
 export type Menu = {
-  href: string;
-  label: string;
-  active: boolean;
-  icon: any;
-  submenus: Submenu[];
   id: string;
+  href?: string;
+  label: string;
+  active?: boolean;
+  icon?: string;
+  submenus: Submenu[];
+  onClick?: () => void;
 };
+
 
 export type Group = {
   groupLabel: string;
@@ -99,6 +101,23 @@ export function getMenuList(pathname: string): Group[] {
           active: pathname.includes("/financeiro/recargas"),
           icon: "heroicons-outline:currency-dollar",
           submenus: [],
+        },
+      ],
+    },
+    {
+      groupLabel: "Conta",
+      id: "account",
+      menus: [
+        {
+          id: "logout",
+          href: "#", // não precisa navegar pra outra página
+          label: "Sair",
+          active: false, // nunca precisa ficar ativo
+          icon: "heroicons-outline:logout",
+          submenus: [],
+          onClick: () => {
+            signOut();
+          },
         },
       ],
     },

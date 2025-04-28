@@ -15,7 +15,7 @@ const LayoutContentProvider = ({ children }: { children: React.ReactNode }) => {
                 'xl:ms-0': config.menuHidden || config.layout === "horizontal",
 
             })}>
-                <div className={cn('p-6 mb-24 md:mb-0', {
+                <div className={cn('pr-6 pl-6 pb-6 pt-0 mb-16 md:mb-0', {
                     'container ': config.contentWidth === 'boxed',
 
 

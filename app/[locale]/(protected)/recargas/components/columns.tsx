@@ -47,8 +47,14 @@ export const getColumns = (onView?: (id: string) => void): ColumnDef<RecargaTabe
     cell: ({ row }) => {
       const data = row.original.inicio;
       if (!data) return '-';
-      const [ano, mes, dia] = data.split('-');
-      return <span>{`${dia}/${mes}/${ano}`}</span>;
+      const dataObj = new Date(data);
+      return (
+        <span>
+          {String(dataObj.getDate()).padStart(2, '0')}/
+          {String(dataObj.getMonth() + 1).padStart(2, '0')}/
+          {dataObj.getFullYear()}
+        </span>
+      );
     },
   },
   {
@@ -57,35 +63,41 @@ export const getColumns = (onView?: (id: string) => void): ColumnDef<RecargaTabe
     cell: ({ row }) => {
       const data = row.original.termino;
       if (!data) return '-';
-      const [ano, mes, dia] = data.split('-');
-      return <span>{`${dia}/${mes}/${ano}`}</span>;
+      const dataObj = new Date(data);
+      return (
+        <span>
+          {String(dataObj.getDate()).padStart(2, '0')}/
+          {String(dataObj.getMonth() + 1).padStart(2, '0')}/
+          {dataObj.getFullYear()}
+        </span>
+      );
     },
   },
   {
     accessorKey: 'valor',
     header: 'Valor (R$)',
-    cell: ({ row }) => `R$ ${Number(row.original.valor)}`,
+    cell: ({ row }) => `R$ ${Number(row.original.valor).toLocaleString('pt-BR')}`,
   },
   {
     accessorKey: 'meta',
     header: 'Meta',
-    cell: ({ row }) => `R$ ${Number(row.original.meta)}`,
+    cell: ({ row }) => `R$ ${Number(row.original.meta).toLocaleString('pt-BR')}`,
   },
   {
     accessorKey: 'atingido',
     header: 'Atingido',
-    cell: ({ row }) => `R$ ${Number(row.original.atingido)}`,
+    cell: ({ row }) => `R$ ${Number(row.original.atingido).toLocaleString('pt-BR')}`,
   },
-  {
-    accessorKey: 'statusMeta',
-    header: 'Status',
-    cell: ({ row }) => {
-      const status = row.original.statusMeta;
-      return (
-        <Badge className={status === 'completo' ? 'bg-green-500' : 'bg-red-500'}>
-          {status === 'completo' ? 'Meta batida' : 'Não bateu'}
-        </Badge>
-      );
-    },
-  }
+  // {
+  //   accessorKey: 'statusMeta',
+  //   header: 'Status',
+  //   cell: ({ row }) => {
+  //     const status = row.original.statusMeta;
+  //     return (
+  //       <Badge className={status === 'completo' ? 'bg-green-500' : 'bg-red-500'}>
+  //         {status === 'completo' ? 'Meta batida' : 'Não bateu'}
+  //       </Badge>
+  //     );
+  //   },
+  // }
 ];

@@ -6,6 +6,12 @@ const users = [
     password: "password",
     image: '/images/users/user-1.jpg',
   },
+  {
+    name: "Lucas de Oliveira",
+    email: "lucas@agenciakg.com",
+    password: "delus9798",
+    image: '/images/users/user-2.jpg',
+  }
   
 ]
 

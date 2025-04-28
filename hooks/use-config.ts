@@ -42,7 +42,7 @@ export const defaultConfig: Config = {
   showSwitcher: true,
   subMenu: false,
   hasSubMenu: false,
-  sidebarTheme: 'light',
+  sidebarTheme: 'dark',
   headerTheme: 'light',
   sidebarBgImage: undefined,
   radius: 0.5,

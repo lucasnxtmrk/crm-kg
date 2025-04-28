@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { plataformas } from '@/lib/data';
-import { Influenciador } from '@/lib/influenciadores';
+import { Influenciador } from '@/lib/types';
 
 type Props = {
   onCancel: () => void;

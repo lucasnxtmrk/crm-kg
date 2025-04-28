@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Eye, SquarePen, Trash2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { Influenciador } from '@/lib/influenciadores';
+import { Influenciador } from '@/lib/types';
 
 
 type Props = {
@@ -15,30 +15,9 @@ type Props = {
 };
 
 export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
+
   {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Selecionar tudo"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Selecionar linha"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'dataCadastro',
+    accessorKey: 'data_cadastro',
     header: ({ column }) => (
       <button
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
@@ -49,12 +28,17 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
       </button>
     ),
     cell: ({ row }) => {
-      const data = row.original.dataCadastro;
-      
+      const data = row.original.data_cadastro;
       if (!data) return <span className="text-muted-foreground">Sem data</span>;
-    
-      const [ano, mes, dia] = data.split('-');
-      return <span>{`${dia}/${mes}/${ano}`}</span>;
+
+      const dataFormatada = typeof data === 'string' ? new Date(data) : data;
+      return (
+        <span>
+          {String(dataFormatada.getDate()).padStart(2, '0')}/
+          {String(dataFormatada.getMonth() + 1).padStart(2, '0')}/
+          {dataFormatada.getFullYear()}
+        </span>
+      );
     },
   },
   {
@@ -89,7 +73,7 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
         rel="noopener noreferrer"
         className="text-blue-600 underline text-sm"
       >
-        @{row.original.instagram.replace('https://instagram.com/', '')}
+        {row.original.instagram.replace('https://instagram.com/', '')}
       </a>
     ),
   },
@@ -102,25 +86,28 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
     id: 'meta',
     header: 'Meta',
     cell: ({ row }) => {
-      const rel = row.original.relacoes?.[0] ?? {};
-      return <span>R$ {rel?.meta?.toLocaleString('pt-BR') || '0'}</span>;
+      const cadastro = row.original.cadastros_influenciadores?.[0];
+const recarga = cadastro?.recargas?.[0];
+return <span>R$ {recarga?.meta?.toLocaleString('pt-BR') || '0'}</span>;
     },
   },
   {
     id: 'atingido',
     header: 'Atingido',
     cell: ({ row }) => {
-      const rel = row.original.relacoes?.[0] ?? {};
-      return <span>R$ {rel?.atingido?.toLocaleString('pt-BR') || '0'}</span>;
+      const cadastro = row.original.cadastros_influenciadores?.[0];
+const recarga = cadastro?.recargas?.[0];
+return <span>R$ {recarga?.meta?.toLocaleString('pt-BR') || '0'}</span>;
     },
   },
   {
     id: 'reembolso',
     header: 'Reembolso',
     cell: ({ row }) => {
-      const rel = row.original.relacoes?.[0] ?? {};
-      const meta = rel?.meta || 0;
-      const atingido = rel?.atingido || 0;
+      const cadastro = row.original.cadastros_influenciadores?.[0];
+const recarga = cadastro?.recargas?.[0];
+      const meta = recarga?.meta || 0;
+      const atingido = recarga?.atingido || 0;
       const reembolso = meta > atingido ? meta - atingido : 0;
   
       const reembolsoClass =
@@ -136,9 +123,10 @@ export const getColumns = ({ onView }: Props): ColumnDef<Influenciador>[] => [
       <div className="w-full text-center font-medium">Status da Meta</div>
     ),
     cell: ({ row }) => {
-      const rel = row.original.relacoes?.[0] ?? {};
-      const meta = rel?.meta || 0;
-      const atingido = rel?.atingido || 0;
+      const cadastro = row.original.cadastros_influenciadores?.[0];
+const recarga = cadastro?.recargas?.[0];
+      const meta = recarga?.meta || 0;
+      const atingido = recarga?.atingido || 0;
   
       const statusLabel =
         meta === 0 && atingido === 0
