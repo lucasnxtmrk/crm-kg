@@ -12,6 +12,7 @@ export async function GET() {
           recargas: true,
         },
       },
+      salarios_mensais: true, // <-- Adicione esta linha!
     },
   });
 
@@ -37,23 +38,27 @@ export async function POST(req: Request) {
         chavepix: data.chavepix,
         status: data.status,
         motivo_banimento: data.motivo_banimento,
-
+    
+        contratado: data.contratado,
+        salario_fixo: data.salario_fixo,
+    
         cadastros_influenciadores: {
           create: {
             id: uuidv4(),
             influenciador_plataforma_id: data.influenciador_plataforma_id,
-            plataformas: {          // conecta à plataforma existente
-              connect: { id: data.plataforma_id }
+            plataformas: {
+              connect: { id: data.plataforma_id },
             },
           },
         },
       },
       include: {
         cadastros_influenciadores: {
-          include: { plataformas: true }
+          include: { plataformas: true },
         },
       },
     });
+    
 
     return NextResponse.json(novo, { status: 201 });
   } catch (err) {

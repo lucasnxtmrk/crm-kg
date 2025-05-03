@@ -91,6 +91,20 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
+      groupLabel: "Evento",
+      id: "evento",
+      menus: [
+        {
+          id: "ranking-evento",
+          href: "/evento",
+          label: "Ranking do Evento",
+          active: pathname.includes("/evento"),
+          icon: "heroicons-outline:chart-bar",
+          submenus: [],
+        },
+      ],
+    },
+    {
       groupLabel: "Financeiro",
       id: "financeiro",
       menus: [

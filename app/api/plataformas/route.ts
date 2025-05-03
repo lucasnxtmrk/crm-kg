@@ -17,6 +17,13 @@ export async function GET() {
   try {
     const plataformas = await prisma.plataformas.findMany({
       orderBy: { nome: "asc" },
+      select: {
+        id: true,
+        nome: true,
+        imagem: true,
+        cor: true,
+        grupoId: true, // 👈 adicione isso!
+      },
     });
     return NextResponse.json(plataformas);
   } catch (error) {
@@ -28,7 +35,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { nome, cor, imagem } = body;
+    const { nome, cor, imagem, grupoId } = body;
 
     if (!nome || !cor) {
       return new NextResponse("Nome e cor são obrigatórios", { status: 400 });
@@ -52,6 +59,7 @@ export async function POST(req: NextRequest) {
         nome,
         cor,
         imagem: imagemPath,
+        grupoId, // ✅ novo campo opcional
       },
     });
 

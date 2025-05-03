@@ -1,0 +1,18 @@
+{
+    "sourceFile": "i18n/routing.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746134012054,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746134012054,
+            "name": "Commit-0",
+            "content": "import {defineRouting} from 'next-intl/routing';\r\nimport {createSharedPathnamesNavigation} from 'next-intl/navigation';\r\n import {locales} from '@/config';\r\nexport const routing = defineRouting({\r\n  // A list of all locales that are supported\r\n  locales: locales,\r\n \r\n  // Used when no locale matches\r\n  defaultLocale: 'pt'\r\n});\r\n \r\n// Lightweight wrappers around Next.js' navigation APIs\r\n// that will consider the routing configuration\r\nexport const {Link, redirect, usePathname, useRouter} =\r\n  createSharedPathnamesNavigation(routing);"
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+{
+    "sourceFile": "app/api/eventos/[id]/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1746294019298,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746294060843,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -23,4 +23,23 @@\n     console.error(\"Erro ao buscar evento:\", error);\r\n     return new Response(\"Erro interno\", { status: 500 });\r\n   }\r\n }\r\n+export async function POST(req: Request, { params }: { params: { id: string } }) {\r\n+    const data = await req.json(); // { influencer_id, meta, atingido }\r\n+  \r\n+    try {\r\n+      const participante = await prisma.participanteEvento.create({\r\n+        data: {\r\n+          evento_id: params.id,\r\n+          influencer_id: data.influencer_id,\r\n+          meta: data.meta,\r\n+          atingido: data.atingido,\r\n+        },\r\n+      });\r\n+  \r\n+      return Response.json(participante);\r\n+    } catch (error) {\r\n+      console.error(\"Erro ao adicionar participante:\", error);\r\n+      return new Response(\"Erro ao adicionar participante\", { status: 500 });\r\n+    }\r\n+  }\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1746295714065,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,30 +1,33 @@\n // /app/api/eventos/[id]/route.ts\r\n import { prisma } from \"@/lib/prisma\";\r\n \r\n export async function GET(req: Request, { params }: { params: { id: string } }) {\r\n-  try {\r\n-    const evento = await prisma.eventos.findUnique({\r\n-      where: { id: params.id },\r\n-      include: {\r\n-        participantes_evento: {\r\n-          include: {\r\n-            influenciador: true, // Para trazer nome, imagem, etc.\r\n+    const id = params.id;\r\n+  \r\n+    try {\r\n+      const evento = await prisma.eventos.findUnique({\r\n+        where: { id },\r\n+        include: {\r\n+          participantes_evento: {\r\n+            include: {\r\n+              influenciador: true,\r\n+            },\r\n           },\r\n         },\r\n-      },\r\n-    });\r\n-\r\n-    if (!evento) {\r\n-      return new Response(\"Evento não encontrado\", { status: 404 });\r\n+      });\r\n+  \r\n+      if (!evento) {\r\n+        return new Response(\"Evento não encontrado\", { status: 404 });\r\n+      }\r\n+  \r\n+      return Response.json(evento);\r\n+    } catch (error) {\r\n+      console.error(\"Erro ao buscar evento:\", error);\r\n+      return new Response(\"Erro ao buscar evento\", { status: 500 });\r\n     }\r\n-\r\n-    return Response.json(evento);\r\n-  } catch (error) {\r\n-    console.error(\"Erro ao buscar evento:\", error);\r\n-    return new Response(\"Erro interno\", { status: 500 });\r\n   }\r\n-}\r\n+  \r\n export async function POST(req: Request, { params }: { params: { id: string } }) {\r\n     const data = await req.json(); // { influencer_id, meta, atingido }\r\n   \r\n     try {\r\n"
+                },
+                {
+                    "date": 1746296358855,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -7,14 +7,14 @@\n     try {\r\n       const evento = await prisma.eventos.findUnique({\r\n         where: { id },\r\n         include: {\r\n-          participantes_evento: {\r\n-            include: {\r\n-              influenciador: true,\r\n+            participantes: {\r\n+              include: {\r\n+                influenciador: true,\r\n+              },\r\n             },\r\n           },\r\n-        },\r\n       });\r\n   \r\n       if (!evento) {\r\n         return new Response(\"Evento não encontrado\", { status: 404 });\r\n@@ -25,9 +25,9 @@\n       console.error(\"Erro ao buscar evento:\", error);\r\n       return new Response(\"Erro ao buscar evento\", { status: 500 });\r\n     }\r\n   }\r\n-  \r\n+\r\n export async function POST(req: Request, { params }: { params: { id: string } }) {\r\n     const data = await req.json(); // { influencer_id, meta, atingido }\r\n   \r\n     try {\r\n"
+                }
+            ],
+            "date": 1746294019298,
+            "name": "Commit-0",
+            "content": "// /app/api/eventos/[id]/route.ts\r\nimport { prisma } from \"@/lib/prisma\";\r\n\r\nexport async function GET(req: Request, { params }: { params: { id: string } }) {\r\n  try {\r\n    const evento = await prisma.eventos.findUnique({\r\n      where: { id: params.id },\r\n      include: {\r\n        participantes_evento: {\r\n          include: {\r\n            influenciador: true, // Para trazer nome, imagem, etc.\r\n          },\r\n        },\r\n      },\r\n    });\r\n\r\n    if (!evento) {\r\n      return new Response(\"Evento não encontrado\", { status: 404 });\r\n    }\r\n\r\n    return Response.json(evento);\r\n  } catch (error) {\r\n    console.error(\"Erro ao buscar evento:\", error);\r\n    return new Response(\"Erro interno\", { status: 500 });\r\n  }\r\n}\r\n"
+        }
+    ]
+}

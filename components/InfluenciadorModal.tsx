@@ -40,6 +40,7 @@ import { Loader2 } from 'lucide-react';
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { size } from "@/lib/type";
+import SalariosMensaisModal from "@/components/SalariosMensaisModal";
 
 
 
@@ -73,6 +74,10 @@ const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) =
   const [chavepix, setChavePix] = useState("");
   const [localInfluenciador, setLocalInfluenciador] = useState<Influenciador | null>(null);
   const [plataformas, setPlataformas] = useState<Plataforma[]>([]);
+  const [contratado, setContratado] = useState(false);
+const [salarioFixo, setSalarioFixo] = useState(false);
+const [modalSalariosOpen, setModalSalariosOpen] = useState(false);
+
 
   useEffect(() => {
     async function fetchPlataformas() {
@@ -115,6 +120,9 @@ const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) =
       setPlataformasSelecionadas(
         influenciador.cadastros_influenciadores.map((c) => c.plataforma_id)
       );
+      setContratado(influenciador.contratado ?? false);
+setSalarioFixo(influenciador.salario_fixo ?? false);
+
     }
   }, [influenciador]);
   
@@ -150,8 +158,13 @@ const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) =
         chavepix,
         status,
         motivo_banimento,
+        contratado: localInfluenciador?.contratado ?? false,
+        salario_fixo: localInfluenciador?.salario_fixo ?? false,
         cadastros_influenciadores: localInfluenciador?.cadastros_influenciadores || [],
+        salarios_mensais: localInfluenciador?.salarios_mensais || [],
+
       };
+      
   
       try {
         // 1. Primeiro faz o PATCH para atualizar
@@ -318,7 +331,7 @@ const totalDepositantes = useMemo(() => {
   if (!isOpen) {
     onClose(); // fecha quando clica fora ou no X
   }
-}}><DialogContent size="full">
+}}><DialogContent size="xl">
 
         <div className="grid grid-cols-[35%_1fr] gap-8">
         <Button
@@ -456,6 +469,9 @@ const totalDepositantes = useMemo(() => {
   </SelectContent>
 </ShadSelect>
   </div>
+  <div className="flex gap-4">
+
+
 
   {/* 2) só renderiza o botão de Motivo quando banido, sem ocupar espaço antes disso */}
   {status === "banido" && (
@@ -481,7 +497,58 @@ const totalDepositantes = useMemo(() => {
                 </div>
               </InnerContent>
             </InnerDialog>
+            <div className="grid grid-cols-[50%_1fr] flex gap-2">
+            <div className="space-y-1.5 flex-1">
+    <Label htmlFor="salario_fixo">Recebe salário fixo?</Label>
+    <ShadSelect
+      value={String(localInfluenciador?.salario_fixo ?? false)}
+      onValueChange={(value) =>
+        setLocalInfluenciador((prev) =>
+          prev ? { ...prev, salario_fixo: value === "true" } : prev
+        )
+      }
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="Selecione" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="true">Sim</SelectItem>
+        <SelectItem value="false">Não</SelectItem>
+      </SelectContent>
+    </ShadSelect>
+  </div>
+  <div className="space-y-1.5 flex-1">
+    <Label htmlFor="contratado">Tem contrato com a KG?</Label>
+    <ShadSelect
+      value={String(localInfluenciador?.contratado ?? false)}
+      onValueChange={(value) =>
+        setLocalInfluenciador((prev) =>
+          prev ? { ...prev, contratado: value === "true" } : prev
+        )
+      }
+    >
+      <SelectTrigger>
+        <SelectValue placeholder="Selecione" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="true">Sim</SelectItem>
+        <SelectItem value="false">Não</SelectItem>
+      </SelectContent>
+    </ShadSelect>
+  </div>
+            </div>
 
+</div>
+{localInfluenciador?.salario_fixo && (
+  <Button
+    type="button"
+    variant="outline"
+    className="w-full"
+    onClick={() => setModalSalariosOpen(true)}
+  >
+    Gerenciar Salários
+  </Button>
+)}
             <div className="space-y-1.5">
   <Label>Plataformas Cadastradas</Label>
   {plataformasSelecionadas.length === 0 ? (
@@ -797,6 +864,29 @@ const totalDepositantes = useMemo(() => {
   }}
   selectedInfluenciador={influenciador}
 />
+<SalariosMensaisModal
+  open={modalSalariosOpen}
+  onClose={() => setModalSalariosOpen(false)}
+  salariosExistentes={localInfluenciador?.salarios_mensais || []}
+  onSave={(novos) => {
+    setLocalInfluenciador((prev) => {
+      if (!prev) return prev;
+
+      const existentes = prev.salarios_mensais || [];
+
+      // Substitui salários do mesmo ano+mes com os novos
+      const filtrados = existentes.filter(
+        (s) => !novos.some(n => n.ano === s.ano && n.mes === s.mes)
+      );
+
+      return {
+        ...prev,
+        salarios_mensais: [...filtrados, ...novos],
+      };
+    });
+  }}
+/>
+
 
 
   </>

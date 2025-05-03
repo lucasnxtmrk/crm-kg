@@ -1,0 +1,18 @@
+{
+    "sourceFile": "i18n/helpers.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746133963054,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746133963054,
+            "name": "Commit-0",
+            "content": "// i18n/helpers.ts\r\n\r\nimport { getMessages, requestLocale } from 'next-intl/server';\r\nimport { notFound } from 'next/navigation';\r\nimport { getLangDir } from 'rtl-detect';\r\nimport { routing } from './routing';\r\n\r\n/**\r\n * Pega o locale atual da request e valida.\r\n */\r\nexport async function getCurrentLocale(): Promise<string> {\r\n  const locale = await requestLocale();\r\n\r\n  // Garante que o locale é válido (baseado no seu routing.ts)\r\n  if (!routing.locales.includes(locale)) {\r\n    notFound();\r\n  }\r\n\r\n  return locale;\r\n}\r\n\r\n/**\r\n * Busca mensagens traduzidas e retorna junto com o locale e direção (ltr/rtl).\r\n */\r\nexport async function getMessagesOrFail() {\r\n  const locale = await getCurrentLocale();\r\n\r\n  try {\r\n    const messages = await getMessages({ locale });\r\n    const direction = getLangDir(locale);\r\n    return { locale, messages, direction };\r\n  } catch (error) {\r\n    notFound();\r\n  }\r\n}\r\n"
+        }
+    ]
+}

@@ -14,11 +14,7 @@ import {
 import { plataformas } from "@/lib/data";
 import Image from "next/image";
 import { Influenciador } from "@/lib/types";
-import { InputProps as ShadInputProps } from "@/components/ui/input";
 
-/**
- * formata número para moeda BRL com duas casas
- */
 function formatCurrency(value: number): string {
   return value.toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -26,9 +22,6 @@ function formatCurrency(value: number): string {
   });
 }
 
-/**
- * converte string "1.234,56" em número 1234.56, tratando NaN como 0
- */
 function parseCurrency(value: string): number {
   const clean = value.replace(/[^\d,.-]/g, "");
   const noThousand = clean.replace(/\./g, "");
@@ -45,14 +38,9 @@ type CurrencyInputProps = Omit<
   onChange: (num: number) => void;
 };
 
-function CurrencyInput({
-  value,
-  onChange,
-  ...rest
-}: CurrencyInputProps) {
+function CurrencyInput({ value, onChange, ...rest }: CurrencyInputProps) {
   const [display, setDisplay] = useState(formatCurrency(value));
 
-  // atualiza o display sempre que o prop `value` mudar
   useEffect(() => {
     setDisplay(formatCurrency(value));
   }, [value]);
@@ -61,9 +49,7 @@ function CurrencyInput({
     <Input
       {...rest}
       value={display}
-      // deixa o usuário digitar livremente
       onChange={(e) => setDisplay(e.target.value)}
-      // só converte e formata ao sair do campo
       onBlur={() => {
         const num = parseCurrency(display);
         onChange(num);
@@ -79,26 +65,29 @@ interface Props {
   onUpdateRecarga?: (updated: Influenciador["recargas"][0]) => void;
 }
 
-export default function RecargaCard({
-  rec,
-  cadastro,
-  onUpdateRecarga,
-}: Props) {
+export default function RecargaCard({ rec, cadastro, onUpdateRecarga }: Props) {
   const plataforma = cadastro
     ? plataformas.find((p) => p.id === cadastro.plataforma_id)
     : undefined;
-  const tipoMeta = rec.tipo; // "valor" ou "depositantes"
+  const tipoMeta = rec.tipo;
 
-  // helper para atualizar apenas campos modificados
-  const handleUpdate = (
-    changes: Partial<Influenciador["recargas"][0]>
-  ) => {
-    onUpdateRecarga?.({ ...rec, ...changes });
+  const handleUpdate = (changes: Partial<Influenciador["recargas"][0]>) => {
+    const updated = { ...rec, ...changes };
+
+    if (
+      Object.prototype.hasOwnProperty.call(changes, "meta") ||
+      Object.prototype.hasOwnProperty.call(changes, "atingido")
+    ) {
+      const diferenca = (updated.meta ?? 0) - (updated.atingido ?? 0);
+      updated.reembolso = Math.max(diferenca, 0);
+      updated.reembolso_status = updated.reembolso > 0 ? "pendente" : "pago";
+    }
+
+    onUpdateRecarga?.(updated);
   };
 
   return (
     <div className="border border-muted rounded-md m-2 p-4 space-y-3">
-      {/* Cabeçalho */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           {plataforma?.imagem && (
@@ -118,7 +107,6 @@ export default function RecargaCard({
           </div>
         </div>
 
-        {/* Status da meta */}
         <div className="w-40">
           <Label>Status da Meta</Label>
           <ShadSelect
@@ -138,9 +126,7 @@ export default function RecargaCard({
         </div>
       </div>
 
-      {/* Grid com inputs */}
       <div className="grid grid-cols-3 gap-4 text-sm">
-        {/* Salário */}
         <div className="space-y-1.5">
           <Label>Salário (R$)</Label>
           <InputGroup>
@@ -152,24 +138,16 @@ export default function RecargaCard({
           </InputGroup>
         </div>
 
-        {/* Campos de Depositantes (só para tipoMeta="depositantes") */}
         {tipoMeta === "depositantes" && (
           <>
             <div className="space-y-1.5">
               <Label>Meta (Depositantes)</Label>
               <Input
                 type="number"
-                value={
-                  rec.depositantes_meta != null
-                    ? rec.depositantes_meta
-                    : ""
-                }
+                value={rec.depositantes_meta ?? ""}
                 onChange={(e) =>
                   handleUpdate({
-                    depositantes_meta:
-                      e.target.value === ""
-                        ? undefined
-                        : Number(e.target.value),
+                    depositantes_meta: e.target.value === "" ? undefined : Number(e.target.value),
                   })
                 }
               />
@@ -178,17 +156,10 @@ export default function RecargaCard({
               <Label>Atingido (Depositantes)</Label>
               <Input
                 type="number"
-                value={
-                  rec.depositantes_atingido != null
-                    ? rec.depositantes_atingido
-                    : ""
-                }
+                value={rec.depositantes_atingido ?? ""}
                 onChange={(e) =>
                   handleUpdate({
-                    depositantes_atingido:
-                      e.target.value === ""
-                        ? undefined
-                        : Number(e.target.value),
+                    depositantes_atingido: e.target.value === "" ? undefined : Number(e.target.value),
                   })
                 }
               />
@@ -196,7 +167,6 @@ export default function RecargaCard({
           </>
         )}
 
-        {/* Meta (R$) */}
         <div className="space-y-1.5">
           <Label>Meta (R$)</Label>
           <InputGroup>
@@ -208,7 +178,6 @@ export default function RecargaCard({
           </InputGroup>
         </div>
 
-        {/* Atingido (R$) */}
         <div className="space-y-1.5">
           <Label>Atingido (R$)</Label>
           <InputGroup>
@@ -220,7 +189,6 @@ export default function RecargaCard({
           </InputGroup>
         </div>
 
-        {/* Reembolso (R$) */}
         <div className="space-y-1.5">
           <Label>Reembolso (R$)</Label>
           <InputGroup>
@@ -230,8 +198,7 @@ export default function RecargaCard({
               onChange={(num) =>
                 handleUpdate({
                   reembolso: num,
-                  reembolso_status:
-                    num > 0 ? "pendente" : "pago",
+                  reembolso_status: num > 0 ? "pendente" : "pago",
                 })
               }
             />

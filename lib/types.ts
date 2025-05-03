@@ -47,7 +47,11 @@ export type Recarga = {
   status_meta: 'completo' | 'incompleto';
   reembolso_status: 'pendente' | 'pago';
 };
-
+export interface SalarioMensal {
+  ano: number;
+  mes: number; // 1 = jan, 12 = dez
+  valor: number;
+}
 // Influenciador principal
 export type Influenciador = {
   recargas: any;
@@ -62,6 +66,9 @@ export type Influenciador = {
   chavepix?: string;
   status: 'bronze' | 'prata' | 'ouro' | 'diamante' | 'banido';
   motivo_banimento?: string;
+  contratado?: boolean; 
+  salario_fixo?: boolean;
+  salarios_mensais?: SalarioMensal[];
   cadastros_influenciadores: CadastroInfluenciadorPlataforma[];
 };
 

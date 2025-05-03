@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/api/eventos/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746294101408,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746294101408,
+            "name": "Commit-0",
+            "content": "// /app/api/eventos/route.ts\r\nimport { prisma } from \"@/lib/prisma\";\r\n\r\nexport async function GET() {\r\n  try {\r\n    const eventos = await prisma.eventos.findMany({\r\n      orderBy: { createdAt: \"desc\" },\r\n    });\r\n    return Response.json(eventos);\r\n  } catch (error) {\r\n    console.error(\"Erro ao buscar eventos:\", error);\r\n    return new Response(\"Erro interno\", { status: 500 });\r\n  }\r\n}\r\n\r\nexport async function POST(req: Request) {\r\n  const data = await req.json();\r\n\r\n  try {\r\n    const evento = await prisma.eventos.create({\r\n      data: {\r\n        nome: data.nome,\r\n        plataforma: data.plataforma,\r\n      },\r\n    });\r\n\r\n    return Response.json(evento);\r\n  } catch (error) {\r\n    console.error(\"Erro ao criar evento:\", error);\r\n    return new Response(\"Erro ao criar evento\", { status: 500 });\r\n  }\r\n}\r\n"
+        }
+    ]
+}

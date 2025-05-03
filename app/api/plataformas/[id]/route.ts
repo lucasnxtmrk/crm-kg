@@ -8,15 +8,19 @@ export async function PATCH(
 ) {
   try {
     const body = await req.json();
-    const { nome, cor } = body;
+    const { nome, cor, grupoId } = body;
 
-    if (!nome && !cor) {
+    if (!nome && !cor && grupoId === undefined) {
       return new NextResponse("Nenhum dado fornecido para atualizar", { status: 400 });
     }
 
     const plataformaAtualizada = await prisma.plataformas.update({
       where: { id: params.id },
-      data: { nome, cor },
+      data: {
+        ...(nome && { nome }),
+        ...(cor && { cor }),
+        ...(grupoId !== undefined && { grupoId }),
+      },
     });
 
     return NextResponse.json(plataformaAtualizada);

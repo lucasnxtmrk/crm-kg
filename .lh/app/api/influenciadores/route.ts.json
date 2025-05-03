@@ -1,0 +1,22 @@
+{
+    "sourceFile": "app/api/influenciadores/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1746286388373,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746292301191,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,8 +11,9 @@\n           plataformas: true,\r\n           recargas: true,\r\n         },\r\n       },\r\n+      salarios_mensais: true, // <-- Adicione esta linha!\r\n     },\r\n   });\r\n \r\n   return NextResponse.json(influenciadores);\r\n"
+                }
+            ],
+            "date": 1746286388373,
+            "name": "Commit-0",
+            "content": "import { prisma } from \"@/lib/prisma\";\r\nimport { NextResponse } from \"next/server\";\r\nimport { v4 as uuidv4 } from \"uuid\";\r\n\r\n// Buscar todos os influenciadores\r\nexport async function GET() {\r\n  const influenciadores = await prisma.influenciadores.findMany({\r\n    include: {\r\n      cadastros_influenciadores: {\r\n        include: {\r\n          plataformas: true,\r\n          recargas: true,\r\n        },\r\n      },\r\n    },\r\n  });\r\n\r\n  return NextResponse.json(influenciadores);\r\n}\r\n\r\n// Criar novo influenciador\r\nexport async function POST(req: Request) {\r\n  const data = await req.json();\r\n  console.log(\"🛠️ Payload recebido:\", data);\r\n\r\n  try {\r\n    const novo = await prisma.influenciadores.create({\r\n      data: {\r\n        id: data.id,\r\n        nome: data.nome,\r\n        imagem: data.imagem,\r\n        instagram: data.instagram,\r\n        email: data.email,\r\n        telefone: data.telefone,\r\n        data_cadastro: new Date(data.data_cadastro),\r\n        cpf: data.cpf,\r\n        chavepix: data.chavepix,\r\n        status: data.status,\r\n        motivo_banimento: data.motivo_banimento,\r\n    \r\n        contratado: data.contratado,\r\n        salario_fixo: data.salario_fixo,\r\n    \r\n        cadastros_influenciadores: {\r\n          create: {\r\n            id: uuidv4(),\r\n            influenciador_plataforma_id: data.influenciador_plataforma_id,\r\n            plataformas: {\r\n              connect: { id: data.plataforma_id },\r\n            },\r\n          },\r\n        },\r\n      },\r\n      include: {\r\n        cadastros_influenciadores: {\r\n          include: { plataformas: true },\r\n        },\r\n      },\r\n    });\r\n    \r\n\r\n    return NextResponse.json(novo, { status: 201 });\r\n  } catch (err) {\r\n    console.error(\"❌ PRISMA ERROR:\", err);\r\n    return NextResponse.json(\r\n      {\r\n        message: \"Erro ao criar influenciador.\",\r\n        error: err instanceof Error ? err.message : String(err),\r\n      },\r\n      { status: 500 }\r\n    );\r\n  }\r\n}"
+        }
+    ]
+}

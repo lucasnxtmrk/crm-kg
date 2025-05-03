@@ -13,6 +13,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             recargas: true,
           },
         },
+        salarios_mensais: true, // ✅ incluído para trazer os salários também
       },
     });
 
@@ -27,13 +28,13 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
   }
 }
 
-// PATCH: Atualizar influenciador e suas recargas
+// PATCH: Atualizar influenciador, recargas e salários mensais
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
   const data = await req.json();
 
   try {
-    // Atualiza dados principais do influenciador
+    // 1. Atualiza os dados principais do influenciador
     const updatedInfluenciador = await prisma.influenciadores.update({
       where: { id },
       data: {
@@ -45,10 +46,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         imagem: data.imagem,
         status: data.status,
         motivo_banimento: data.motivo_banimento,
+        contratado: data.contratado,
+        salario_fixo: data.salario_fixo,
       },
     });
 
-    // Agora atualiza cada recarga (se vieram recargas no request)
+    // 2. Atualiza recargas (se houver)
     if (data.cadastros_influenciadores) {
       for (const cadastro of data.cadastros_influenciadores) {
         for (const recarga of cadastro.recargas) {
@@ -69,6 +72,36 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       }
     }
 
+    // 3. Atualiza salários mensais (delete + create)
+    if (Array.isArray(data.salarios_mensais)) {
+      const anos: number[] = [...new Set(
+        (data.salarios_mensais as { ano: number }[]).map((s) => s.ano)
+      )];
+      // Remove salários antigos desses anos
+      await prisma.salarios_mensais.deleteMany({
+        where: {
+          influenciador_id: id,
+          ano: { in: anos },
+        },
+      });
+
+      // Cria apenas os que possuem valor numérico válido
+      const preenchidos = data.salarios_mensais.filter(
+        (s: any) => typeof s.valor === "number" && !isNaN(s.valor)
+      );
+
+      if (preenchidos.length > 0) {
+        await prisma.salarios_mensais.createMany({
+          data: preenchidos.map((s: any) => ({
+            influenciador_id: id,
+            ano: s.ano,
+            mes: s.mes,
+            valor: s.valor,
+          })),
+        });
+      }
+    }
+
     return Response.json(updatedInfluenciador);
   } catch (error) {
     console.error("Erro ao atualizar influenciador:", error);
@@ -76,13 +109,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-
-// DELETE: Deletar influenciador
+// DELETE: Deletar influenciador e dados associados
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   const id = params.id;
 
   try {
-    // Primeiro, deletar recargas associadas
+    // Deletar recargas associadas
     await prisma.recargas.deleteMany({
       where: {
         cadastros_influenciadores: {
@@ -91,14 +123,21 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       },
     });
 
-    // Depois, deletar cadastros_influenciadores
+    // Deletar cadastros de plataformas
     await prisma.cadastros_influenciadores.deleteMany({
       where: {
         influenciador_id: id,
       },
     });
 
-    // Por último, deletar o influenciador
+    // Deletar salários mensais
+    await prisma.salarios_mensais.deleteMany({
+      where: {
+        influenciador_id: id,
+      },
+    });
+
+    // Deletar influenciador
     await prisma.influenciadores.delete({
       where: { id },
     });
