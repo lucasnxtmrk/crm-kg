@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/[locale]/(protected)/eventos/page.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746297481682,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746297481682,
+            "name": "Commit-0",
+            "content": "'use client'\r\n\r\nimport Link from 'next/link'\r\nimport { useEffect, useState } from 'react'\r\n\r\ninterface Evento {\r\n  id: string\r\n  nome: string\r\n  createdAt: string\r\n}\r\n\r\nexport default function EventosPage() {\r\n  const [eventos, setEventos] = useState<Evento[]>([])\r\n\r\n  useEffect(() => {\r\n    fetch('/api/eventos')\r\n      .then(res => res.json())\r\n      .then(setEventos)\r\n      .catch(() => alert(\"Erro ao carregar eventos\"))\r\n  }, [])\r\n\r\n  return (\r\n    <div className=\"p-4\">\r\n      <h1 className=\"text-xl font-bold mb-4\">Eventos</h1>\r\n      <ul className=\"space-y-2\">\r\n        {eventos.map(evento => (\r\n          <li key={evento.id}>\r\n            <Link href={`/eventos/${evento.id}`} className=\"text-blue-600 hover:underline\">\r\n              {evento.nome} – {new Date(evento.createdAt).toLocaleDateString()}\r\n            </Link>\r\n          </li>\r\n        ))}\r\n      </ul>\r\n    </div>\r\n  )\r\n}\r\n"
+        }
+    ]
+}

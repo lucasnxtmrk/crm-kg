@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/[locale]/(protected)/eventos/[eventoId]/components/ListaInfluencers.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746297484304,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746297484304,
+            "name": "Commit-0",
+            "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\ninterface Participante {\r\n  id: string\r\n  influenciador: {\r\n    nome: string\r\n    instagram: string\r\n  }\r\n  meta: number\r\n  atingido: number\r\n}\r\n\r\nexport default function ListaInfluencers({ eventoId }: { eventoId: string }) {\r\n  const [participantes, setParticipantes] = useState<Participante[]>([])\r\n\r\n  useEffect(() => {\r\n    fetch(`/api/eventos/${eventoId}`)\r\n      .then(res => res.json())\r\n      .then(data => setParticipantes(data.participantes_evento))\r\n  }, [eventoId])\r\n\r\n  return (\r\n    <table className=\"w-full mt-4 border\">\r\n      <thead>\r\n        <tr className=\"bg-gray-100\">\r\n          <th className=\"p-2\">Influenciador</th>\r\n          <th className=\"p-2\">Instagram</th>\r\n          <th className=\"p-2\">Meta</th>\r\n          <th className=\"p-2\">Atingido</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        {participantes.map(p => (\r\n          <tr key={p.id} className=\"border-t\">\r\n            <td className=\"p-2\">{p.influenciador.nome}</td>\r\n            <td className=\"p-2\">@{p.influenciador.instagram}</td>\r\n            <td className=\"p-2\">{p.meta}</td>\r\n            <td className=\"p-2\">{p.atingido}</td>\r\n          </tr>\r\n        ))}\r\n      </tbody>\r\n    </table>\r\n  )\r\n}\r\n"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/[locale]/(protected)/eventos/[eventoId]/components/Ranking.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746297483615,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746297483615,
+            "name": "Commit-0",
+            "content": "'use client'\r\n\r\nimport { useEffect, useState } from 'react'\r\n\r\ninterface Participante {\r\n  id: string\r\n  influenciador: {\r\n    nome: string\r\n    imagem?: string\r\n  }\r\n  atingido: number\r\n}\r\n\r\nexport default function Ranking({ eventoId }: { eventoId: string }) {\r\n  const [participantes, setParticipantes] = useState<Participante[]>([])\r\n\r\n  useEffect(() => {\r\n    fetch(`/api/eventos/${eventoId}`)\r\n      .then(res => res.json())\r\n      .then(data => {\r\n        const sorted = data.participantes_evento.sort((a: Participante, b: Participante) => b.atingido - a.atingido)\r\n        setParticipantes(sorted)\r\n      })\r\n  }, [eventoId])\r\n\r\n  return (\r\n    <div className=\"grid grid-cols-1 gap-4 mt-4\">\r\n      {participantes.map((p, index) => (\r\n        <div key={p.id} className=\"p-4 border rounded shadow\">\r\n          <div className=\"flex items-center gap-4\">\r\n            <span className=\"text-2xl font-bold\">#{index + 1}</span>\r\n            <img src={p.influenciador.imagem || '/placeholder.jpg'} className=\"w-10 h-10 rounded-full\" />\r\n            <span>{p.influenciador.nome}</span>\r\n            <span className=\"ml-auto font-semibold text-green-600\">{p.atingido} atingido</span>\r\n          </div>\r\n        </div>\r\n      ))}\r\n    </div>\r\n  )\r\n}\r\n"
+        }
+    ]
+}

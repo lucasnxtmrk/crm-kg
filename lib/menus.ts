@@ -96,7 +96,7 @@ export function getMenuList(pathname: string): Group[] {
       menus: [
         {
           id: "ranking-evento",
-          href: "/evento",
+          href: "/eventos",
           label: "Ranking do Evento",
           active: pathname.includes("/evento"),
           icon: "heroicons-outline:chart-bar",
