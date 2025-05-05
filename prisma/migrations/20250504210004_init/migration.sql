@@ -82,6 +82,8 @@ CREATE TABLE "eventos" (
     "id" UUID NOT NULL,
     "nome" TEXT NOT NULL,
     "plataforma_id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "eventos_pkey" PRIMARY KEY ("id")
 );

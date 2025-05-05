@@ -1,46 +1,47 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface Participante {
   id: string
-  influenciador: {
-    nome: string
-    instagram: string
-  }
-  meta: number
+  nome: string
+  imagem: string
   atingido: number
+  meta: number
 }
 
-export default function ListaInfluencers({ eventoId }: { eventoId: string }) {
-  const [participantes, setParticipantes] = useState<Participante[]>([])
+interface Props {
+  participantes: Participante[]
+  eventoId: string
+}
 
-  useEffect(() => {
-    fetch(`/api/eventos/${eventoId}`)
-      .then(res => res.json())
-      .then(data => setParticipantes(data.participantes_evento))
-  }, [eventoId])
-
+export default function ListaParticipantesEvento({ participantes }: Props) {
   return (
-    <table className="w-full mt-4 border">
-      <thead>
-        <tr className="bg-gray-100">
-          <th className="p-2">Influenciador</th>
-          <th className="p-2">Instagram</th>
-          <th className="p-2">Meta</th>
-          <th className="p-2">Atingido</th>
-        </tr>
-      </thead>
-      <tbody>
-        {participantes.map(p => (
-          <tr key={p.id} className="border-t">
-            <td className="p-2">{p.influenciador.nome}</td>
-            <td className="p-2">@{p.influenciador.instagram}</td>
-            <td className="p-2">{p.meta}</td>
-            <td className="p-2">{p.atingido}</td>
+    <div className="bg-white rounded-lg shadow p-4 w-full h-full overflow-auto">
+      <h2 className="text-xl font-bold mb-4">Lista de Influenciadores</h2>
+      <table className="w-full text-left border-separate border-spacing-y-2">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Atingido</th>
+            <th>Meta</th>
+            <th>Ações</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {participantes.map(p => (
+            <tr key={p.id} className="bg-gray-100 rounded">
+              <td>{p.nome}</td>
+              <td>{p.atingido}</td>
+              <td>{p.meta}</td>
+              <td>
+                <Button size="sm" variant="outline">Editar</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }

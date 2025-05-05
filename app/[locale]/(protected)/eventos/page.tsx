@@ -1,7 +1,9 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/routing';
 import { useEffect, useState } from 'react'
+import { useLocale } from 'next-intl'; 
+
 
 interface Evento {
   id: string
@@ -11,6 +13,8 @@ interface Evento {
 
 export default function EventosPage() {
   const [eventos, setEventos] = useState<Evento[]>([])
+  const locale = useLocale(); // ⬅️ Pegue o locale atual
+
 
   useEffect(() => {
     fetch('/api/eventos')
