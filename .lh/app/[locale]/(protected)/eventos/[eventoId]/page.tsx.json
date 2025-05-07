@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 5,
+            "activePatchIndex": 10,
             "patches": [
                 {
                     "date": 1746576136204,
@@ -28,6 +28,26 @@
                 {
                     "date": 1746576931369,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n import ListaParticipantesEvento from './components/ListaInfluencers'\r\n \r\n interface Participante {\r\n   id: string\r\n-  influenciador_id: string // <- adicione este campo corretamente\r\n+  influencer_id: string // <- adicione este campo corretamente\r\n   atingido: number\r\n   meta: number\r\n   influenciador: {\r\n     nome: string\r\n"
+                },
+                {
+                    "date": 1746640542888,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,9 +50,9 @@\n   }))\r\n   \r\n \r\n   return (\r\n-    <div className=\"min-h-screen p-4\">\r\n+    <div className=\"min-h-screen\">\r\n       <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n         <TabsList className=\"w-full flex justify-center mb-6 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg\">\r\n           <TabsTrigger value=\"ranking\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n           <TabsTrigger value=\"participantes\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">👥 Influencers</TabsTrigger>\r\n"
+                },
+                {
+                    "date": 1746640582818,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -52,9 +52,9 @@\n \r\n   return (\r\n     <div className=\"min-h-screen\">\r\n       <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n-        <TabsList className=\"w-full flex justify-center mb-6 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg\">\r\n+        <TabsList className=\"w-full flex justify-center bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg\">\r\n           <TabsTrigger value=\"ranking\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n           <TabsTrigger value=\"participantes\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">👥 Influencers</TabsTrigger>\r\n         </TabsList>\r\n \r\n"
+                },
+                {
+                    "date": 1746640605157,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -52,9 +52,9 @@\n \r\n   return (\r\n     <div className=\"min-h-screen\">\r\n       <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n-        <TabsList className=\"w-full flex justify-center bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg\">\r\n+        <TabsList className=\"w-full flex justify-center bg-[#230621] rounded-xl shadow-lg text-white rounded-lg\">\r\n           <TabsTrigger value=\"ranking\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n           <TabsTrigger value=\"participantes\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">👥 Influencers</TabsTrigger>\r\n         </TabsList>\r\n \r\n"
+                },
+                {
+                    "date": 1746640657450,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -53,9 +53,9 @@\n   return (\r\n     <div className=\"min-h-screen\">\r\n       <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n         <TabsList className=\"w-full flex justify-center bg-[#230621] rounded-xl shadow-lg text-white rounded-lg\">\r\n-          <TabsTrigger value=\"ranking\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n+          <TabsTrigger value=\"ranking\" className=\"px-4 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n           <TabsTrigger value=\"participantes\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">👥 Influencers</TabsTrigger>\r\n         </TabsList>\r\n \r\n         <TabsContent value=\"ranking\" className=\"w-full h-full\">\r\n"
+                },
+                {
+                    "date": 1746641649908,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -50,9 +50,9 @@\n   }))\r\n   \r\n \r\n   return (\r\n-    <div className=\"min-h-screen\">\r\n+    <div className=\"min-h-[100vh]\">\r\n       <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n         <TabsList className=\"w-full flex justify-center bg-[#230621] rounded-xl shadow-lg text-white rounded-lg\">\r\n           <TabsTrigger value=\"ranking\" className=\"px-4 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n           <TabsTrigger value=\"participantes\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">👥 Influencers</TabsTrigger>\r\n"
                 }
             ],
             "date": 1746576136204,

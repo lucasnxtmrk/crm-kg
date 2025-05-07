@@ -51,10 +51,10 @@ export default function EventoPage() {
   
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-[100vh]">
       <Tabs defaultValue="ranking" className="w-full h-full">
-        <TabsList className="w-full flex justify-center mb-6 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg">
-          <TabsTrigger value="ranking" className="px-4 py-2 rounded-full data-[state=inactive]:text-white">🏆 Ranking</TabsTrigger>
+        <TabsList className="w-full flex justify-center bg-[#230621] rounded-xl shadow-lg text-white rounded-lg">
+          <TabsTrigger value="ranking" className="px-4 rounded-full data-[state=inactive]:text-white">🏆 Ranking</TabsTrigger>
           <TabsTrigger value="participantes" className="px-4 py-2 rounded-full data-[state=inactive]:text-white">👥 Influencers</TabsTrigger>
         </TabsList>
 

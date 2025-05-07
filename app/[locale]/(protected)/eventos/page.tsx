@@ -6,7 +6,7 @@ import { useLocale } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Plus } from 'lucide-react'
+import { Plus, Pencil } from 'lucide-react'
 import { EventoModal } from '@/components/EventosModal'
 import { EventoFormData, Plataforma } from '@/lib/types'
 
@@ -14,6 +14,7 @@ interface Evento {
   id: string
   nome: string
   createdAt: string
+  data_evento?: string
   plataformas: {
     plataforma: {
       id: string
@@ -28,10 +29,10 @@ export default function EventosPage() {
   const locale = useLocale()
   const [busca, setBusca] = useState('')
   const [modalAberto, setModalAberto] = useState(false)
+  const [eventoEditando, setEventoEditando] = useState<EventoFormData | null>(null)
   const [plataformasDisponiveis, setPlataformasDisponiveis] = useState<Plataforma[]>([])
   const [loading, setLoading] = useState(false)
 
-  // Buscar eventos
   const buscarEventos = async () => {
     try {
       setLoading(true)
@@ -46,7 +47,6 @@ export default function EventosPage() {
   }
 
   useEffect(() => {
-    // Buscar plataformas disponíveis
     async function fetchPlataformas() {
       const response = await fetch('/api/plataformas')
       const data = await response.json()
@@ -61,34 +61,66 @@ export default function EventosPage() {
   }, [])
 
   const abrirNovo = () => {
+    setEventoEditando(null)
+    setModalAberto(true)
+  }
+
+  const abrirEdicao = (evento: Evento) => {
+    const plataformaIds = evento.plataformas.map((p) => p.plataforma.id)
+    setEventoEditando({
+      id: evento.id,
+      nome: evento.nome,
+      data: evento.data_evento?.split('T')[0] ?? '', // garantir formato yyyy-mm-dd
+      plataformaIds,
+    })
     setModalAberto(true)
   }
 
   const handleSalvar = async (data: EventoFormData) => {
     try {
       setLoading(true)
-      const response = await fetch('/api/eventos', {
-        method: 'POST',
+  
+      const isEdicao = !!data.id // Se existe ID, é edição
+      const url = isEdicao ? `/api/eventos/${data.id}` : '/api/eventos'
+      const method = isEdicao ? 'PATCH' : 'POST'
+  
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nome: data.nome,
-          plataformaIds: data.plataformaIds, // Certificando que estamos enviando os IDs das plataformas
+          data: data.data,
+          plataformaIds: data.plataformaIds,
         }),
       })
-
-      if (!response.ok) throw new Error('Erro ao criar evento')
-
-      // Recarregar os eventos após a criação
-      const newEvent = await response.json()
-      setEventos((prevEventos) => [...prevEventos, newEvent])
-
-      setModalAberto(false) // Fechar o modal após salvar
+  
+      if (!response.ok) {
+        const msg = await response.text()
+        throw new Error(`Erro na API: ${msg}`)
+      }
+  
+      const eventoRetornado = await response.json()
+  
+      if (isEdicao) {
+        // Atualizar evento na lista local
+        setEventos((prevEventos) =>
+          prevEventos.map((ev) => (ev.id === data.id ? eventoRetornado : ev))
+        )
+      } else {
+        // Inserir novo evento na lista
+        setEventos((prevEventos) => [...prevEventos, eventoRetornado])
+      }
+  
+      setModalAberto(false)
+      setEventoEditando(null)
     } catch (error) {
       console.error('Erro ao salvar evento:', error)
+      alert('Falha ao salvar o evento. Verifique os dados e tente novamente.')
     } finally {
       setLoading(false)
     }
   }
+  
 
   const eventosFiltrados = eventos.filter((evento) =>
     evento.nome.toLowerCase().includes(busca.toLowerCase())
@@ -119,44 +151,54 @@ export default function EventosPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {eventosFiltrados.map((evento) => (
-            <Link
-              key={evento.id}
-              href={`/eventos/${evento.id}`}
-              className="block"
-            >
-              <div className="bg-white rounded-lg shadow hover:shadow-md transition p-4 border border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-800">{evento.nome}</h2>
-                <p className="text-sm text-gray-500">
-                  {new Date(evento.createdAt).toLocaleDateString(locale)}
-                </p>
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  {evento.plataformas.map(({ plataforma }) => (
-                    <div
-                      key={plataforma.id}
-                      className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-sm text-gray-600"
-                    >
-                      {plataforma.imagem && (
-                        <img
-                          src={plataforma.imagem}
-                          alt={plataforma.nome}
-                          className="w-4 h-4 rounded"
-                        />
-                      )}
-                      {plataforma.nome}
-                    </div>
-                  ))}
+            <div key={evento.id} className="relative group">
+              <Link href={`/eventos/${evento.id}`} className="block">
+                <div className="bg-white rounded-lg shadow hover:shadow-md transition p-4 border border-gray-200 cursor-pointer">
+                  <h2 className="text-lg font-semibold text-gray-800">{evento.nome}</h2>
+                  <p className="text-sm text-gray-500">
+                    {new Date(evento.createdAt).toLocaleDateString(locale)}
+                  </p>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    {evento.plataformas.map(({ plataforma }) => (
+                      <div
+                        key={plataforma.id}
+                        className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-sm text-gray-600"
+                      >
+                        {plataforma.imagem && (
+                          <img
+                            src={plataforma.imagem}
+                            alt={plataforma.nome}
+                            className="w-4 h-4 rounded"
+                          />
+                        )}
+                        {plataforma.nome}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-white/80 hover:bg-gray-600"
+                onClick={() => abrirEdicao(evento)}
+              >
+                <Pencil className="w-4 h-4" />
+              </Button>
+            </div>
           ))}
         </div>
       )}
 
       <EventoModal
         open={modalAberto}
-        onClose={() => setModalAberto(false)}
+        onClose={() => {
+          setModalAberto(false)
+          setEventoEditando(null)
+        }}
         onSave={handleSalvar}
-        plataformasDisponiveis={plataformasDisponiveis || []} // Garantir que nunca seja undefined
+        plataformasDisponiveis={plataformasDisponiveis}
+        evento={eventoEditando} // 👈 Passando os dados pro modal
       />
     </div>
   )

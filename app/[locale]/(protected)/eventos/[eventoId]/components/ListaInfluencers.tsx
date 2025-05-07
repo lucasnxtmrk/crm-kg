@@ -94,11 +94,15 @@ const paginated = participantesFiltrados.slice(
         setLoadingInfluencers(true)
         const res = await fetch('/api/influenciadores')
         const data = await res.json()
-        setAvailableInfluencers(data.map((i: any) => ({
-          id: i.id,
-          nome: i.nome,
-          imagem: i.imagem,
-        })))
+        const participantesIds = new Set(participantes.map(p => p.influencer_id))
+
+const filtrados = data.filter((i: any) => !participantesIds.has(i.id))
+
+setAvailableInfluencers(filtrados.map((i: any) => ({
+  id: i.id,
+  nome: i.nome,
+  imagem: i.imagem,
+})))
       } catch (err: any) {
         setErrorLoadingInfluencers(err.message)
       } finally {
@@ -106,7 +110,7 @@ const paginated = participantesFiltrados.slice(
       }
     }
     fetchInfluencers()
-  }, [])
+  }, [participantes])
 
   const handleAddClick = () => {
     setModalMode('add')
@@ -223,20 +227,20 @@ const paginated = participantesFiltrados.slice(
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 w-full overflow-auto">
+    <div className="bg-[#230621] min-h-[90vh] rounded-xl text-white p-6 w-full overflow-auto">
       <div className="flex justify-between items-center gap-4 flex-wrap mb-4">
         <h2 className="text-2xl font-semibold">🎯 Participantes do Evento</h2>
         <div className='flex justify-between items-center gap-4'>
         <Input
-          placeholder="Filtrar pelo nome do influenciador..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-          className="max-w-xs"
-          />
+  placeholder="Filtrar pelo nome..."
+  value={busca}
+  onChange={(e) => setBusca(e.target.value)}
+  className="max-w-xs"
+/>
         <Dialog open={isModalOpen} onOpenChange={handleCloseModal}>
           <DialogTrigger asChild>
             
-            <Button size="md" className="flex items-center gap-2">
+            <Button size="md" variant={"outline"} className="flex items-center gap-2 bg-white text-black">
               <PlusCircle className="h-4 w-4" /> Adicionar Influencer
             </Button>
           </DialogTrigger>
@@ -291,7 +295,7 @@ const paginated = participantesFiltrados.slice(
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left">
           <thead>
-            <tr className="bg-gray-100 text-gray-700">
+            <tr className="bg-[#140512] text-white">
               <th className="px-4 py-2">Nome</th>
               <th className="px-4 py-2 text-center">Atingido</th>
               <th className="px-4 py-2 text-center">Meta</th>
@@ -300,16 +304,16 @@ const paginated = participantesFiltrados.slice(
           </thead>
           <tbody>
             {paginated.map(p => (
-              <tr key={p.id} className="border-b hover:bg-gray-50">
+              <tr key={p.id} className="border-b border-[#3f193c] hover:bg-[#441240]">
                 <td className="px-4 py-1.5 align-middle">{p.nome}</td>
                 <td className="px-4 py-1.5 text-center align-middle">{p.atingido}</td>
                 <td className="px-4 py-1.5 text-center align-middle">{p.meta}</td>
                 <td className="px-4 py-1.5 text-right align-middle">
                   <div className="flex justify-end gap-2">
-                    <Button size="icon" variant="outline" onClick={() => handleEditar(p)}>
+                    <Button size="icon" variant="default" className='bg-transparent' onClick={() => handleEditar(p)}>
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" className="bg-red-600 hover:bg-red-700 text-white" onClick={() => handleStartDelete(p)}>
+                    <Button size="icon" className="bg-transparent hover:bg-red-700 text-white" onClick={() => handleStartDelete(p)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
@@ -330,7 +334,7 @@ const paginated = participantesFiltrados.slice(
         <div className="flex items-center justify-end py-4 px-4">
           <div className="flex items-center gap-2">
             <Button
-              variant="outline"
+              variant="default"
               size="icon"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
@@ -350,7 +354,7 @@ const paginated = participantesFiltrados.slice(
               </Button>
             ))}
             <Button
-              variant="outline"
+              variant="default"
               size="icon"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
