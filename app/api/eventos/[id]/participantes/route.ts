@@ -42,3 +42,28 @@ export async function POST(
     return new Response("Erro ao adicionar participante", { status: 500 });
   }
 }
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const data = await req.json(); // { participante_id, meta, atingido }
+
+  try {
+    const participante = await prisma.participanteEvento.update({
+      where: {
+        id: data.participante_id, // ID do participante, não do evento
+      },
+      data: {
+        meta: data.meta,
+        atingido: data.atingido,
+      },
+    });
+
+    return Response.json(participante);
+  } catch (error) {
+    console.error("Erro ao atualizar participante:", error);
+    return new Response("Erro ao atualizar participante", { status: 500 });
+  }
+}
+

@@ -52,6 +52,43 @@ export interface SalarioMensal {
   mes: number; // 1 = jan, 12 = dez
   valor: number;
 }
+
+export type EventoFormData = {
+  id?: string
+  nome: string
+  data: string
+  plataformaIds: string[] // ✅ correto
+}
+
+
+export type Evento = {
+  id: string
+  nome: string
+  createdAt: string
+  plataformas: {
+    id: string
+    plataformaId: string
+    plataforma: {
+      id: string
+      nome: string
+      imagem: string | null
+    }
+  }[]
+  participantes: {
+    id: string
+    influencer_id: string
+    meta: number
+    atingido: number
+    influenciador: {
+      id: string
+      nome: string
+      imagem: string | null
+    }
+  }[]
+}
+
+
+
 // Influenciador principal
 export type Influenciador = {
   recargas: any;

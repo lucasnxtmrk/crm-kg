@@ -142,11 +142,11 @@ export default function GrupoModal({
           <div className="space-y-2">
             <Label>Plataformas do Grupo</Label>
             <ReactSelectOption
-  options={plataformasDisponiveis.map(p => ({ value: p.id, label: p.nome }))}
-  value={plataformasDisponiveis
-    .filter(p => plataformasSelecionadas.includes(p.id))
-    .map(p => ({ value: p.id, label: p.nome }))
-  }
+            options={plataformasDisponiveis.map(p => ({ value: p.id, label: p.nome }))}
+            value={plataformasDisponiveis
+            .filter(p => plataformasSelecionadas.includes(p.id))
+            .map(p => ({ value: p.id, label: p.nome }))
+            }
   onChange={(selected) => setPlataformasSelecionadas(selected)}
 />
 

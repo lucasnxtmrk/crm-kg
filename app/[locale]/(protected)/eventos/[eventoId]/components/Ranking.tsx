@@ -1,14 +1,13 @@
 'use client'
 
-import Image from 'next/image'
-import { cn } from '@/lib/utils'
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface Participante {
   id: string
   nome: string
   imagem: string
   atingido: number
+  meta: number
 }
 
 interface Props {
@@ -17,59 +16,88 @@ interface Props {
 
 export default function RankingLeaderboard({ participantes }: Props) {
   const ordenados = [...participantes].sort((a, b) => b.atingido - a.atingido)
+  const top3 = ordenados.slice(0, 3)
+  const restantes = ordenados.slice(3)
 
-  const medalhas = ['🥇', '🥈', '🥉']
+  const calcularEstrelas = (atingido: number, meta: number) => {
+    const proporcao = meta > 0 ? atingido / meta : 0
+    const estrelas = Math.min(5, Math.floor(proporcao * 5))
+    return estrelas
+  }
 
   return (
-    <div className="max-w min-h-[80vh]  mx-auto p-4 bg-gradient-to-br from-blue-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white">
-      <h2 className="text-center text-2xl font-bold mb-6">🏆 Ranking do Evento</h2>
+    <div className="min-h-screen p-6 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white">
+      <h2 className="text-center text-3xl font-bold mb-8">🏆 Ranking do Evento</h2>
 
-      <ul className="space-y-2">
-        {ordenados.map((p, index) => (
+      {/* Pódio */}
+      <div className="flex justify-center items-end gap-4 mb-12">
+        {top3.map((p, index) => {
+          const alturas = ['h-48', 'h-64', 'h-40']
+          const cores = ['bg-yellow-500', 'bg-gray-400', 'bg-orange-500']
+          const posicoes = [1, 0, 2] // Para ordenar: 2º, 1º, 3º
+
+          return (
+            <div key={p.id} className="flex flex-col items-center">
+              <div
+                className={`w-24 ${alturas[posicoes[index]]} ${cores[posicoes[index]]} rounded-t-md flex flex-col items-center justify-end animate-bounce`}
+              >
+                <Avatar className="mb-2">
+                  <AvatarImage src={p.imagem} alt={p.nome} />
+                  <AvatarFallback>
+                    {p.nome
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-lg font-bold">{p.nome}</span>
+                <div className="flex">
+                  {Array.from({ length: calcularEstrelas(p.atingido, p.meta) }).map((_, i) => (
+                    <span key={i}>⭐</span>
+                  ))}
+                </div>
+                <span className="text-sm">{p.atingido} pts</span>
+              </div>
+              <span className="mt-2 text-xl">
+                {['🥇', '🥈', '🥉'][posicoes[index]]}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Demais participantes */}
+      <ul className="space-y-4">
+        {restantes.map((p, index) => (
           <li
             key={p.id}
-            className={cn(
-              "flex items-center justify-between px-4 py-2 rounded-lg",
-              index === 0 ? 'bg-yellow-700 bg-opacity-30' :
-              index === 1 ? 'bg-gray-400 bg-opacity-30' :
-              index === 2 ? 'bg-orange-700 bg-opacity-30' :
-              'bg-white bg-opacity-10'
-            )}
+            className="flex items-center justify-between bg-white bg-opacity-10 px-4 py-2 rounded-lg"
           >
-            {/* Posição e medalha */}
-            <div className="flex items-center gap-2 w-12 font-bold">
-              {index < 3 ? medalhas[index] : index + 1}
+            <div className="flex items-center gap-4">
+              <span className="text-xl font-bold">{index + 4}</span>
+              <Avatar>
+                <AvatarImage src={p.imagem} alt={p.nome} />
+                <AvatarFallback>
+                  {p.nome
+                    .split(' ')
+                    .map((n) => n[0])
+                    .join('')
+                    .toUpperCase()
+                    .slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="font-medium">{p.nome}</span>
             </div>
-
-            {/* Imagem e nome */}
-            <div className="flex items-center gap-3 flex-1">
-            <Avatar className="h-10 w-10 bg-primary text-white font-bold border border-white">
-  <AvatarImage
-    src={p.imagem}
-    alt={p.nome}
-    onError={(e) => (e.currentTarget.style.display = 'none')}
-  />
-  <AvatarFallback>
-    {p.nome
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2)}
-  </AvatarFallback>
-</Avatar>
-<span className="font-medium">{p.nome}</span>
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {Array.from({ length: calcularEstrelas(p.atingido, p.meta) }).map((_, i) => (
+                  <span key={i}>⭐</span>
+                ))}
+              </div>
+              <span className="font-bold">{p.atingido} pts</span>
             </div>
-
-            {/* Estrelas */}
-            <div className="flex gap-1">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <span key={i}>{i < Math.round(p.atingido / 1000) ? '⭐' : '☆'}</span>
-              ))}
-            </div>
-
-            {/* Pontuação */}
-            <div className="w-12 text-right font-bold">{p.atingido}</div>
           </li>
         ))}
       </ul>

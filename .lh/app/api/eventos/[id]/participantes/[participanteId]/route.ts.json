@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/api/eventos/[id]/participantes/[participanteId]/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746575590983,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746575590983,
+            "name": "Commit-0",
+            "content": "// /app/api/eventos/[id]/participantes/[participanteId]/route.ts\r\nimport { prisma } from \"@/lib/prisma\";\r\nimport { NextRequest } from \"next/server\";\r\n\r\n// Função DELETE para excluir um participante específico de um evento\r\nexport async function DELETE(\r\n  req: NextRequest, // Use NextRequest para acesso mais fácil aos params\r\n  { params }: { params: { id: string; participanteId: string } } // Note que agora temos 'id' (evento) e 'participanteId' (participante) nos params\r\n) {\r\n  const eventoId = params.id; // ID do evento\r\n  const participanteId = params.participanteId; // ID do participante a ser excluído\r\n\r\n  try {\r\n    // Opcional: Verificar se o participante realmente pertence a este evento antes de excluir\r\n    // const participanteExistente = await prisma.participanteEvento.findUnique({\r\n    //   where: { id: participanteId },\r\n    //   select: { evento_id: true }, // Seleciona apenas o ID do evento relacionado\r\n    // });\r\n\r\n    // if (!participanteExistente || participanteExistente.evento_id !== eventoId) {\r\n    //   return new Response(\"Participante não encontrado ou não pertence a este evento\", { status: 404 });\r\n    // }\r\n\r\n    // Exclui o registro ParticipanteEvento usando o ID do participante\r\n    await prisma.participanteEvento.delete({\r\n      where: {\r\n        id: participanteId, // Use o ID do ParticipanteEvento capturado na URL\r\n      },\r\n    });\r\n\r\n    // Resposta de sucesso (sem conteúdo é comum para DELETE)\r\n    return new Response(null, { status: 204 });\r\n\r\n  } catch (error: any) {\r\n     // Se o erro for porque o registro não foi encontrado, retorna 404\r\n     if (error.code === 'P2025') { // Código de erro do Prisma para \"record not found\"\r\n         console.error(`Erro ao excluir participante ${participanteId}: Registro não encontrado.`);\r\n         return new Response(\"Participante não encontrado\", { status: 404 });\r\n     }\r\n\r\n    console.error(`Erro ao excluir participante ${participanteId}:`, error);\r\n    return new Response(\"Erro interno do servidor ao excluir participante\", { status: 500 });\r\n  }\r\n}\r\n"
+        }
+    ]
+}

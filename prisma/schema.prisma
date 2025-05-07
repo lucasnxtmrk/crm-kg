@@ -51,16 +51,19 @@ model grupos {
 }
 
 model plataformas {
-  id     String  @id @db.VarChar(50)
-  nome   String  @db.VarChar(255)
-  imagem String?
-  cor    String
+  id               String  @id @db.VarChar(50)
+  nome             String  @db.VarChar(255)
+  imagem           String?
+  cor              String
+  grupoId          String? @db.Uuid
+  grupo            grupos? @relation(fields: [grupoId], references: [id])
 
-  grupoId String? @db.Uuid
-  grupo   grupos? @relation(fields: [grupoId], references: [id])
+  // Remova a linha abaixo
+  // eventos         eventos[] // <-- Remova esta linha
 
   cadastros_influenciadores cadastros_influenciadores[]
-  eventos                   eventos[]
+  // Relacionamento através de EventoPlataforma
+  eventosPlataforma EventoPlataforma[] // <-- Mantém a relação intermediária
 
   @@map("plataformas")
 }
@@ -103,9 +106,9 @@ model salarios_mensais {
 model eventos {
   id            String               @id @default(uuid()) @db.Uuid
   nome          String
-  plataforma_id String
-  plataforma    plataformas          @relation(fields: [plataforma_id], references: [id])
+  plataformas   EventoPlataforma[]   // <-- nova relação
   participantes ParticipanteEvento[]
+  data_evento   DateTime? // <-- ADICIONE ESTE CAMPO (Data do evento)
 
   createdAt DateTime @default(now()) // ✅ já tinha
   updatedAt DateTime @default(now()) @updatedAt
@@ -121,3 +124,15 @@ model ParticipanteEvento {
   evento        eventos         @relation(fields: [evento_id], references: [id])
   influenciador influenciadores @relation(fields: [influencer_id], references: [id])
 }
+
+model EventoPlataforma {
+  id           String       @id @default(cuid())
+  eventoId     String       @db.Uuid // Altere para UUID
+  plataformaId String       @db.VarChar(50)
+
+  evento       eventos      @relation(fields: [eventoId], references: [id])
+  plataforma   plataformas  @relation(fields: [plataformaId], references: [id])
+
+  @@unique([eventoId, plataformaId])
+}
+

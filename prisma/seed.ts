@@ -1,4 +1,3 @@
-// prisma/seed.ts
 const { PrismaClient } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
 const { v4: uuidv4 } = require("uuid");
@@ -12,96 +11,119 @@ const grupos = [
 
 const plataformas = [
   { id: "genio777", nome: "Gênio777", imagem: "/images/plataformas/genio777.png", cor: "#3B82F6", grupoId: grupos[0].id },
-  { id: "pgcoelho", nome: "PG-COELHO", imagem: "/images/plataformas/pgcoelho.png", cor: "#8B5CF6", grupoId: grupos[1].id },
+  { id: "pgcoelho", nome: "PG-COELHO", imagem: "/images/plataformas/pgcoelho.png", cor: "#8B5CF6", grupoId: grupos[0].id },
+  { id: "piupiu", nome: "PiuPiu", imagem: "/images/plataformas/piupiu.png", cor: "#22C55E", grupoId: grupos[1].id },
+  { id: "sergipeboi", nome: "Sergipe Boi", imagem: "/images/plataformas/sergipeboi.png", cor: "#F97316", grupoId: grupos[1].id },
 ];
 
 const eventos = [
-  { id: uuidv4(), nome: "Lançamento Março", plataforma_id: "genio777" },
-  { id: uuidv4(), nome: "Especial Copa", plataforma_id: "pgcoelho" },
-];
-
-const influenciadoresFamosos = [
-  { nome: "Neymar Jr", instagram: "neymarjr", imagem: "/images/avatar/neymar.png" },
-  { nome: "Anitta", instagram: "anitta", imagem: "/images/avatar/anitta.png" },
+  { id: uuidv4(), nome: "Campanha Março", plataformaIds: ["genio777", "pgcoelho"] },
+  { id: uuidv4(), nome: "Campanha Abril", plataformaIds: ["piupiu", "sergipeboi"] },
 ];
 
 async function main() {
   console.log("Resetando dados...");
+  await prisma.participanteEvento.deleteMany();
+  await prisma.salarios_mensais.deleteMany();
+  await prisma.recargas.deleteMany();
+  await prisma.cadastros_influenciadores.deleteMany();
+  await prisma.influenciadores.deleteMany();
+  await prisma.eventoPlataforma.deleteMany();
+  await prisma.eventos.deleteMany();
+  await prisma.plataformas.deleteMany();
+  await prisma.grupos.deleteMany();
 
-  // Deleta dados se as tabelas existirem
-  try { await prisma.participanteEvento.deleteMany(); } catch { console.log("Tabela participanteEvento ainda não existe."); }
-  try { await prisma.eventos.deleteMany(); } catch {}
-  try { await prisma.recargas.deleteMany(); } catch {}
-  try { await prisma.cadastros_influenciadores.deleteMany(); } catch {}
-  try { await prisma.influenciadores.deleteMany(); } catch {}
-  try { await prisma.plataformas.deleteMany(); } catch {}
-  try { await prisma.grupos.deleteMany(); } catch {}
-
-  console.log("Inserindo grupos e plataformas...");
   await prisma.grupos.createMany({ data: grupos });
   await prisma.plataformas.createMany({ data: plataformas });
-  await prisma.eventos.createMany({ data: eventos });
 
-  for (const famoso of influenciadoresFamosos) {
-    const novoInfluenciador = await prisma.influenciadores.create({
+  for (const evento of eventos) {
+    await prisma.eventos.create({
+      data: {
+        id: evento.id,
+        nome: evento.nome,
+        data_evento: faker.date.recent(),
+        plataformas: {
+          create: evento.plataformaIds.map((pid) => ({ plataformaId: pid })),
+        },
+      },
+    });
+  }
+
+  for (let i = 0; i < 10; i++) {
+    const nome = faker.person.fullName();
+    const influenciador = await prisma.influenciadores.create({
       data: {
         id: uuidv4(),
-        nome: famoso.nome,
-        imagem: famoso.imagem,
-        instagram: `@${famoso.instagram}`,
+        nome,
+        imagem: "/images/avatar/avatar.png",
+        instagram: `@${nome.split(" ")[0].toLowerCase()}official`,
         email: faker.internet.email(),
         telefone: faker.phone.number("## #####-####"),
-        data_cadastro: faker.date.recent(),
+        data_cadastro: faker.date.past(),
         cpf: faker.string.numeric(11),
         chavepix: faker.internet.email(),
-        status: "diamante",
-        contratado: faker.datatype.boolean(),
+        status: faker.helpers.arrayElement(["diamante", "ouro", "prata"]),
+        contratado: true,
         salario_fixo: faker.datatype.boolean(),
       },
     });
 
-    const plataformaRandom = faker.helpers.arrayElement(plataformas);
-
+    const plataforma = faker.helpers.arrayElement(plataformas);
     const cadastro = await prisma.cadastros_influenciadores.create({
       data: {
         id: uuidv4(),
-        influenciador_id: novoInfluenciador.id,
-        plataforma_id: plataformaRandom.id,
-        influenciador_plataforma_id: famoso.instagram.toUpperCase(),
+        influenciador_id: influenciador.id,
+        plataforma_id: plataforma.id,
+        influenciador_plataforma_id: influenciador.instagram.replace("@", "").toUpperCase(),
       },
     });
+
+    const salario = parseFloat(faker.finance.amount(1500, 3000, 2));
+    const meta = parseFloat(faker.finance.amount(5000, 9000, 2));
+    const atingido = parseFloat(faker.finance.amount(meta * 0.6, meta * 1.2, 2));
 
     await prisma.recargas.create({
       data: {
         id: uuidv4(),
         cadastro_id: cadastro.id,
-        inicio: faker.date.past(),
-        termino: faker.date.future(),
-        salario: 2500,
-        meta: 5000,
-        atingido: 3500,
-        reembolso: 300,
-        depositantes_meta: 80,
-        depositantes_atingido: 45,
+        inicio: faker.date.recent(),
+        termino: faker.date.soon(),
+        salario,
+        meta,
+        atingido,
+        reembolso: faker.number.int({ min: 0, max: 500 }),
+        depositantes_meta: faker.number.int({ min: 50, max: 100 }),
+        depositantes_atingido: faker.number.int({ min: 30, max: 80 }),
         tipo: "valor",
-        status_meta: "incompleto",
-        reembolso_status: "pendente",
+        status_meta: atingido >= meta ? "completo" : "incompleto",
+        reembolso_status: atingido >= meta ? "pago" : "pendente",
       },
     });
 
-    // Adiciona o influenciador no evento
+    for (let m = 1; m <= 4; m++) {
+      await prisma.salarios_mensais.create({
+        data: {
+          id: uuidv4(),
+          influenciador_id: influenciador.id,
+          ano: 2025,
+          mes: m,
+          valor: faker.number.float({ min: 1800, max: 3200, precision: 0.01 }),
+        },
+      });
+    }
+
     await prisma.participanteEvento.create({
       data: {
         id: uuidv4(),
         evento_id: eventos[0].id,
-        influencer_id: novoInfluenciador.id,
-        meta: 10000,
-        atingido: faker.number.int({ min: 4000, max: 9000 }),
+        influencer_id: influenciador.id,
+        meta: Math.floor(meta),
+        atingido: Math.floor(atingido),
       },
     });
   }
 
-  console.log("✅ Seed concluído com sucesso!");
+  console.log("✅ Seed completo com dados realistas!");
 }
 
 main()

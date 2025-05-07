@@ -91,13 +91,13 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: "Evento",
+      groupLabel: "Festa de Lançamento",
       id: "evento",
       menus: [
         {
           id: "ranking-evento",
           href: "/eventos",
-          label: "Ranking do Evento",
+          label: "Eventos",
           active: pathname.includes("/evento"),
           icon: "heroicons-outline:chart-bar",
           submenus: [],

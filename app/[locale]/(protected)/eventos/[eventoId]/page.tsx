@@ -14,6 +14,7 @@ import ListaParticipantesEvento from './components/ListaInfluencers'
 
 interface Participante {
   id: string
+  influencer_id: string // <- adicione este campo corretamente
   atingido: number
   meta: number
   influenciador: {
@@ -41,18 +42,20 @@ export default function EventoPage() {
 
   const participantesFormatados = participantes.map((p) => ({
     id: p.id,
+    influencer_id: p.influencer_id, // certo
     nome: p.influenciador.nome,
     imagem: p.influenciador.imagem || '/avatar.png',
     atingido: p.atingido,
     meta: p.meta
   }))
+  
 
   return (
     <div className="min-h-screen p-4">
       <Tabs defaultValue="ranking" className="w-full h-full">
-        <TabsList className="w-full flex justify-center mb-6 bg-gray-900 text-white rounded-lg">
-          <TabsTrigger value="ranking" className="px-4 py-2">🏆 Ranking</TabsTrigger>
-          <TabsTrigger value="participantes" className="px-4 py-2">👥 Influencers</TabsTrigger>
+        <TabsList className="w-full flex justify-center mb-6 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg">
+          <TabsTrigger value="ranking" className="px-4 py-2 rounded-full data-[state=inactive]:text-white">🏆 Ranking</TabsTrigger>
+          <TabsTrigger value="participantes" className="px-4 py-2 rounded-full data-[state=inactive]:text-white">👥 Influencers</TabsTrigger>
         </TabsList>
 
         <TabsContent value="ranking" className="w-full h-full">
@@ -60,8 +63,19 @@ export default function EventoPage() {
         </TabsContent>
 
         <TabsContent value="participantes" className="w-full h-full">
-          <ListaParticipantesEvento participantes={participantesFormatados} eventoId={eventoId} />
-        </TabsContent>
+        <ListaParticipantesEvento
+          participantes={participantesFormatados}
+          eventoId={eventoId}
+          onUpdateParticipantes={() => {
+          fetch(`/api/eventos/${eventoId}`)
+          .then(res => res.json())
+          .then(data => {
+          if (Array.isArray(data.participantes)) {
+          setParticipantes(data.participantes)
+        }
+      })
+  }}
+/>        </TabsContent>
       </Tabs>
     </div>
   )

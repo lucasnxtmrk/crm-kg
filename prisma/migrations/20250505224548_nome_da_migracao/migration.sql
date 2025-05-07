@@ -81,7 +81,6 @@ CREATE TABLE "salarios_mensais" (
 CREATE TABLE "eventos" (
     "id" UUID NOT NULL,
     "nome" TEXT NOT NULL,
-    "plataforma_id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -99,11 +98,23 @@ CREATE TABLE "ParticipanteEvento" (
     CONSTRAINT "ParticipanteEvento_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "EventoPlataforma" (
+    "id" TEXT NOT NULL,
+    "eventoId" UUID NOT NULL,
+    "plataformaId" VARCHAR(50) NOT NULL,
+
+    CONSTRAINT "EventoPlataforma_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "influenciadores_cpf_key" ON "influenciadores"("cpf");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "salarios_mensais_influenciador_id_ano_mes_key" ON "salarios_mensais"("influenciador_id", "ano", "mes");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "EventoPlataforma_eventoId_plataformaId_key" ON "EventoPlataforma"("eventoId", "plataformaId");
 
 -- AddForeignKey
 ALTER TABLE "cadastros_influenciadores" ADD CONSTRAINT "cadastros_influenciadores_influenciador_id_fkey" FOREIGN KEY ("influenciador_id") REFERENCES "influenciadores"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -121,10 +132,13 @@ ALTER TABLE "recargas" ADD CONSTRAINT "recargas_cadastro_id_fkey" FOREIGN KEY ("
 ALTER TABLE "salarios_mensais" ADD CONSTRAINT "salarios_mensais_influenciador_id_fkey" FOREIGN KEY ("influenciador_id") REFERENCES "influenciadores"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "eventos" ADD CONSTRAINT "eventos_plataforma_id_fkey" FOREIGN KEY ("plataforma_id") REFERENCES "plataformas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "ParticipanteEvento" ADD CONSTRAINT "ParticipanteEvento_evento_id_fkey" FOREIGN KEY ("evento_id") REFERENCES "eventos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ParticipanteEvento" ADD CONSTRAINT "ParticipanteEvento_influencer_id_fkey" FOREIGN KEY ("influencer_id") REFERENCES "influenciadores"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EventoPlataforma" ADD CONSTRAINT "EventoPlataforma_eventoId_fkey" FOREIGN KEY ("eventoId") REFERENCES "eventos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "EventoPlataforma" ADD CONSTRAINT "EventoPlataforma_plataformaId_fkey" FOREIGN KEY ("plataformaId") REFERENCES "plataformas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

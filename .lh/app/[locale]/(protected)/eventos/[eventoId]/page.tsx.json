@@ -3,16 +3,36 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 5,
             "patches": [
                 {
-                    "date": 1746297482669,
+                    "date": 1746576136204,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746576194413,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,14 +13,13 @@\n import ListaParticipantesEvento from './components/ListaInfluencers'\r\n \r\n interface Participante {\r\n   id: string\r\n+  influencer_id: string\r\n+  nome: string\r\n+  imagem: string\r\n   atingido: number\r\n   meta: number\r\n-  influenciador: {\r\n-    nome: string\r\n-    imagem: string\r\n-  }\r\n }\r\n \r\n export default function EventoPage() {\r\n   const { eventoId } = useParams() as { eventoId: string }\r\n"
+                },
+                {
+                    "date": 1746576259539,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,13 +13,15 @@\n import ListaParticipantesEvento from './components/ListaInfluencers'\r\n \r\n interface Participante {\r\n   id: string\r\n-  influencer_id: string\r\n-  nome: string\r\n-  imagem: string\r\n+  influenciador_id: string // <- adicione este campo corretamente\r\n   atingido: number\r\n   meta: number\r\n+  influenciador: {\r\n+    nome: string\r\n+    imagem: string\r\n+  }\r\n }\r\n \r\n export default function EventoPage() {\r\n   const { eventoId } = useParams() as { eventoId: string }\r\n@@ -45,8 +47,9 @@\n     imagem: p.influenciador.imagem || '/avatar.png',\r\n     atingido: p.atingido,\r\n     meta: p.meta\r\n   }))\r\n+  \r\n \r\n   return (\r\n     <div className=\"min-h-screen p-4\">\r\n       <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n"
+                },
+                {
+                    "date": 1746576844344,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -41,9 +41,9 @@\n   }, [eventoId])\r\n \r\n   const participantesFormatados = participantes.map((p) => ({\r\n     id: p.id,\r\n-    influencer_id: p.influenciador_id, // <-- pegue esse campo também\r\n+    influencer_id: p.influenciador_id, // <- ERRADO: deve ser \"influencer_id\"\r\n     nome: p.influenciador.nome,\r\n     imagem: p.influenciador.imagem || '/avatar.png',\r\n     atingido: p.atingido,\r\n     meta: p.meta\r\n"
+                },
+                {
+                    "date": 1746576910592,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -41,9 +41,9 @@\n   }, [eventoId])\r\n \r\n   const participantesFormatados = participantes.map((p) => ({\r\n     id: p.id,\r\n-    influencer_id: p.influenciador_id, // <- ERRADO: deve ser \"influencer_id\"\r\n+    influencer_id: p.influencer_id, // certo\r\n     nome: p.influenciador.nome,\r\n     imagem: p.influenciador.imagem || '/avatar.png',\r\n     atingido: p.atingido,\r\n     meta: p.meta\r\n"
+                },
+                {
+                    "date": 1746576931369,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -13,9 +13,9 @@\n import ListaParticipantesEvento from './components/ListaInfluencers'\r\n \r\n interface Participante {\r\n   id: string\r\n-  influenciador_id: string // <- adicione este campo corretamente\r\n+  influencer_id: string // <- adicione este campo corretamente\r\n   atingido: number\r\n   meta: number\r\n   influenciador: {\r\n     nome: string\r\n"
                 }
             ],
-            "date": 1746297482669,
+            "date": 1746576136204,
             "name": "Commit-0",
-            "content": "'use client'\r\n\r\nimport { useParams } from 'next/navigation'\r\nimport { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'\r\nimport Ranking from './components/Ranking'\r\nimport ListaInfluencers from './components/ListaInfluencers'\r\n\r\nexport default function EventoPage() {\r\n  const { eventoId } = useParams() as { eventoId: string }\r\n\r\n  return (\r\n    <div className=\"p-4\">\r\n      <h1 className=\"text-xl font-bold mb-4\">Evento #{eventoId}</h1>\r\n      <Tabs defaultValue=\"ranking\">\r\n        <TabsList>\r\n          <TabsTrigger value=\"ranking\">Ranking</TabsTrigger>\r\n          <TabsTrigger value=\"influencers\">Influenciadores</TabsTrigger>\r\n        </TabsList>\r\n\r\n        <TabsContent value=\"ranking\">\r\n          <Ranking eventoId={eventoId} />\r\n        </TabsContent>\r\n\r\n        <TabsContent value=\"influencers\">\r\n          <ListaInfluencers eventoId={eventoId} />\r\n        </TabsContent>\r\n      </Tabs>\r\n    </div>\r\n  )\r\n}\r\n"
+            "content": "'use client'\r\n\r\nimport { useState, useEffect } from 'react'\r\nimport { useParams } from 'next/navigation'\r\nimport {\r\n  Tabs,\r\n  TabsList,\r\n  TabsTrigger,\r\n  TabsContent,\r\n} from '@/components/ui/tabs'\r\n\r\nimport RankingLeaderboard from './components/Ranking'\r\nimport ListaParticipantesEvento from './components/ListaInfluencers'\r\n\r\ninterface Participante {\r\n  id: string\r\n  atingido: number\r\n  meta: number\r\n  influenciador: {\r\n    nome: string\r\n    imagem: string\r\n  }\r\n}\r\n\r\nexport default function EventoPage() {\r\n  const { eventoId } = useParams() as { eventoId: string }\r\n  const [participantes, setParticipantes] = useState<Participante[]>([])\r\n\r\n  useEffect(() => {\r\n    fetch(`/api/eventos/${eventoId}`)\r\n      .then(res => res.json())\r\n      .then(data => {\r\n        if (Array.isArray(data.participantes)) {\r\n          setParticipantes(data.participantes)\r\n        }\r\n      })\r\n      .catch(err => {\r\n        console.error('Erro ao buscar participantes:', err)\r\n      })\r\n  }, [eventoId])\r\n\r\n  const participantesFormatados = participantes.map((p) => ({\r\n    id: p.id,\r\n    influencer_id: p.influenciador_id, // <-- pegue esse campo também\r\n    nome: p.influenciador.nome,\r\n    imagem: p.influenciador.imagem || '/avatar.png',\r\n    atingido: p.atingido,\r\n    meta: p.meta\r\n  }))\r\n\r\n  return (\r\n    <div className=\"min-h-screen p-4\">\r\n      <Tabs defaultValue=\"ranking\" className=\"w-full h-full\">\r\n        <TabsList className=\"w-full flex justify-center mb-6 bg-gradient-to-br from-purple-900 via-indigo-800 to-purple-800 rounded-xl shadow-lg text-white rounded-lg\">\r\n          <TabsTrigger value=\"ranking\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">🏆 Ranking</TabsTrigger>\r\n          <TabsTrigger value=\"participantes\" className=\"px-4 py-2 rounded-full data-[state=inactive]:text-white\">👥 Influencers</TabsTrigger>\r\n        </TabsList>\r\n\r\n        <TabsContent value=\"ranking\" className=\"w-full h-full\">\r\n          <RankingLeaderboard participantes={participantesFormatados} />\r\n        </TabsContent>\r\n\r\n        <TabsContent value=\"participantes\" className=\"w-full h-full\">\r\n        <ListaParticipantesEvento\r\n          participantes={participantesFormatados}\r\n          eventoId={eventoId}\r\n          onUpdateParticipantes={() => {\r\n          fetch(`/api/eventos/${eventoId}`)\r\n          .then(res => res.json())\r\n          .then(data => {\r\n          if (Array.isArray(data.participantes)) {\r\n          setParticipantes(data.participantes)\r\n        }\r\n      })\r\n  }}\r\n/>        </TabsContent>\r\n      </Tabs>\r\n    </div>\r\n  )\r\n}\r\n"
         }
     ]
 }

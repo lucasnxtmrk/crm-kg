@@ -12,8 +12,11 @@ export async function GET(
       where: { id },
       include: {
         participantes: {
+          include: { influenciador: true },
+        },
+        plataformas: {
           include: {
-            influenciador: true,
+            plataforma: true,
           },
         },
       },
