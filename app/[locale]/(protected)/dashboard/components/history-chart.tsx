@@ -1,35 +1,29 @@
-"use client";
-import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import { useTheme } from "next-themes";
-import { useConfig } from "@/hooks/use-config";
+'use client';
+import dynamic from 'next/dynamic';
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+
+import { useTheme } from 'next-themes';
+import { useConfig } from '@/hooks/use-config';
 import {
   getGridConfig,
   getXAxisConfig,
   getYAxisConfig,
-} from "@/lib/appex-chart-options";
-import { colors } from "@/lib/colors";
+} from '@/lib/appex-chart-options';
+import { colors } from '@/lib/colors';
 
 interface HistoryChartProps {
   height?: number;
-  series?: {
+  series: {
     name: string;
     data: number[];
   }[];
+  categories?: string[]; // Dias da semana, por exemplo
 }
 
 const HistoryChart = ({
   height = 360,
-  series = [
-    {
-      name: "Recargas",
-      data: [1200, 1400, 1800, 1600, 2000, 2200, 2100], // exemplo de dados semanais
-    },
-    {
-      name: "Reembolsos",
-      data: [300, 500, 400, 600, 700, 650, 620],
-    },
-  ],
+  series,
+  categories = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
 }: HistoryChartProps) => {
   const [config] = useConfig();
   const { theme: mode } = useTheme();
@@ -39,14 +33,14 @@ const HistoryChart = ({
       toolbar: { show: false },
     },
     dataLabels: { enabled: false },
-    stroke: { curve: "straight", width: 2 },
-    colors: [colors.primary, colors.danger], // azul e vermelho por exemplo
+    stroke: { curve: 'smooth', width: 2 },
+    colors: [colors.primary, colors.danger],
     tooltip: {
-      theme: mode === "dark" ? "dark" : "light",
+      theme: mode === 'dark' ? 'dark' : 'light',
     },
     grid: getGridConfig(),
     fill: {
-      type: "gradient",
+      type: 'gradient',
       gradient: {
         shadeIntensity: 0.3,
         opacityFrom: 0.4,
@@ -55,19 +49,22 @@ const HistoryChart = ({
       },
     },
     yaxis: getYAxisConfig(
-      mode === "light" ? colors["default-600"] : colors["default-300"]
+      mode === 'light' ? colors['default-600'] : colors['default-300']
     ),
-    xaxis: getXAxisConfig(
-      mode === "light" ? colors["default-600"] : colors["default-300"]
-    ),
+    xaxis: {
+      ...getXAxisConfig(
+        mode === 'light' ? colors['default-600'] : colors['default-300']
+      ),
+      categories: categories,
+    },
     legend: {
       offsetY: 4,
       show: true,
-      fontSize: "12px",
-      fontFamily: "Inter",
+      fontSize: '12px',
+      fontFamily: 'Inter',
       labels: {
         colors:
-          mode === "light" ? colors["default-600"] : colors["default-300"],
+          mode === 'light' ? colors['default-600'] : colors['default-300'],
       },
       markers: {
         width: 6,
@@ -89,7 +86,7 @@ const HistoryChart = ({
       series={series}
       type="area"
       height={height}
-      width={"100%"}
+      width="100%"
     />
   );
 };

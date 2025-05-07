@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/[locale]/(protected)/dashboard/components/history-chart.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746649326414,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746649326414,
+            "name": "Commit-0",
+            "content": "'use client';\r\nimport dynamic from 'next/dynamic';\r\nconst Chart = dynamic(() => import('react-apexcharts'), { ssr: false });\r\n\r\nimport { useTheme } from 'next-themes';\r\nimport { useConfig } from '@/hooks/use-config';\r\nimport {\r\n  getGridConfig,\r\n  getXAxisConfig,\r\n  getYAxisConfig,\r\n} from '@/lib/appex-chart-options';\r\nimport { colors } from '@/lib/colors';\r\n\r\ninterface HistoryChartProps {\r\n  height?: number;\r\n  series: {\r\n    name: string;\r\n    data: number[];\r\n  }[];\r\n  categories?: string[]; // Dias da semana, por exemplo\r\n}\r\n\r\nconst HistoryChart = ({\r\n  height = 360,\r\n  series,\r\n  categories = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],\r\n}: HistoryChartProps) => {\r\n  const [config] = useConfig();\r\n  const { theme: mode } = useTheme();\r\n\r\n  const options: any = {\r\n    chart: {\r\n      toolbar: { show: false },\r\n    },\r\n    dataLabels: { enabled: false },\r\n    stroke: { curve: 'smooth', width: 2 },\r\n    colors: [colors.primary, colors.danger],\r\n    tooltip: {\r\n      theme: mode === 'dark' ? 'dark' : 'light',\r\n    },\r\n    grid: getGridConfig(),\r\n    fill: {\r\n      type: 'gradient',\r\n      gradient: {\r\n        shadeIntensity: 0.3,\r\n        opacityFrom: 0.4,\r\n        opacityTo: 0.5,\r\n        stops: [0, 30, 100],\r\n      },\r\n    },\r\n    yaxis: getYAxisConfig(\r\n      mode === 'light' ? colors['default-600'] : colors['default-300']\r\n    ),\r\n    xaxis: {\r\n      ...getXAxisConfig(\r\n        mode === 'light' ? colors['default-600'] : colors['default-300']\r\n      ),\r\n      categories: categories,\r\n    },\r\n    legend: {\r\n      offsetY: 4,\r\n      show: true,\r\n      fontSize: '12px',\r\n      fontFamily: 'Inter',\r\n      labels: {\r\n        colors:\r\n          mode === 'light' ? colors['default-600'] : colors['default-300'],\r\n      },\r\n      markers: {\r\n        width: 6,\r\n        height: 6,\r\n        offsetY: 0,\r\n        offsetX: -5,\r\n        radius: 12,\r\n      },\r\n      itemMargin: {\r\n        horizontal: 18,\r\n        vertical: 0,\r\n      },\r\n    },\r\n  };\r\n\r\n  return (\r\n    <Chart\r\n      options={options}\r\n      series={series}\r\n      type=\"area\"\r\n      height={height}\r\n      width=\"100%\"\r\n    />\r\n  );\r\n};\r\n\r\nexport default HistoryChart;\r\n"
+        }
+    ]
+}

@@ -70,6 +70,29 @@ export default function InfluenciadoresPage() {
   const plataformasFiltradas = plataformas.filter((p) =>
     p.nome.toLowerCase().includes(busca.toLowerCase())
   );
+  function ImagemComFallback({
+    src,
+    fallback,
+    alt,
+    ...props
+  }: {
+    src?: string
+    fallback: string
+    alt: string
+    [key: string]: any
+  }) {
+    const [erro, setErro] = useState(false)
+  
+    return (
+      <Image
+        src={erro || !src ? fallback : src}
+        alt={alt}
+        onError={() => setErro(true)}
+        {...props}
+      />
+    )
+  }
+
 
   return (
     <div className="p-4 space-y-4">
@@ -106,19 +129,14 @@ export default function InfluenciadoresPage() {
                     <Link href={`/${locale}/influenciadores/grupos/${grupo.id}`} className="block">
                       <Card className="hover:shadow-lg transition cursor-pointer">
                         <CardContent className="p-6 text-center space-y-2">
-                          {grupo.imagem ? (
-                            <Image
-                              src={grupo.imagem}
-                              alt={grupo.nome}
-                              width={120}
-                              height={120}
-                              className="mx-auto h-32 object-contain"
-                            />
-                          ) : (
-                            <div className="w-32 h-32 mx-auto bg-gray-200 flex items-center justify-center text-gray-500">
-                              Sem imagem
-                            </div>
-                          )}
+                        <ImagemComFallback
+  src={grupo.imagem}
+  fallback="/images/grupos/default.png"
+  alt={grupo.nome}
+  width={120}
+  height={120}
+  className="mx-auto h-32 object-contain"
+/>
                           <div className="text-sm font-medium">{grupo.nome}</div>
                         </CardContent>
                       </Card>
@@ -150,11 +168,16 @@ export default function InfluenciadoresPage() {
                     <Link href={`/${locale}/influenciadores/plataformas/${plataforma.id}`} className="block">
                       <Card className="hover:shadow-lg transition cursor-pointer">
                         <CardContent className="p-6 text-center space-y-2">
-                          {plataforma.imagem ? (
-                            <Image src={plataforma.imagem} alt={plataforma.nome} width={300} height={300} className="mx-auto mb-2 w-64 h-32 object-contain" />
-                          ) : (
-                            <div className="w-64 h-32 mx-auto mb-2 bg-muted flex items-center justify-center text-gray-400">Sem imagem</div>
-                          )}
+                        <ImagemComFallback
+  src={plataforma.imagem}
+  fallback="/images/plataformas/default.png"
+  alt={plataforma.nome}
+  width={300}
+  height={300}
+  className="mx-auto mb-2 w-64 h-32 object-contain"
+/>
+
+
                           <div className="text-sm font-medium">{plataforma.nome}</div>
                         </CardContent>
                       </Card>

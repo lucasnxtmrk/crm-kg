@@ -1,135 +1,75 @@
-"use client"
+'use client'
+import { useEffect, useState } from 'react'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { DateRange } from "react-day-picker"
 
-import * as React from "react"
-import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+interface Influenciador {
+  meta: number
+  atingido: number
+  cadastros_influenciadores: {
+    influenciadores: {
+      nome: string
+      imagem?: string
+    }
+  }
+  inicio: string
+}
 
-} from "@tanstack/react-table"
-import { columns } from "./columns"
-import { Input } from "@/components/ui/input"
+interface Props {
+  intervalo?: DateRange
+}
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+export default function ListaInfluencers({ intervalo }: Props) {
+  const [influenciadores, setInfluenciadores] = useState<Influenciador[]>([])
 
-import { data } from "./data"
-import TablePagination from "./table-pagination"
-
-const ExampleOne = () => {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 5,
-      },
-    },
-  })
+  useEffect(() => {
+    fetch('/api/recargas')
+      .then(res => res.json())
+      .then((data) => {
+        const from = intervalo?.from ? new Date(intervalo.from) : null
+        const to = intervalo?.to ? new Date(intervalo.to) : null
+  
+        const filtrados = data
+          .filter((rec: any) => {
+            if (!from || !to) return true
+            const dataInicio = new Date(rec.inicio)
+            return dataInicio >= from && dataInicio <= to
+          })
+          .filter((rec: any) => Number(rec.atingido) >= Number(rec.meta))
+          .sort((a: any, b: any) => Number(b.meta) - Number(a.meta))
+  
+        setInfluenciadores(filtrados)
+      })
+  }, [intervalo])
   
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4 px-5">
-        <div className="flex-1 text-xl font-medium text-default-900">
-          Metas batidas
-        </div>
-        <div className="flex-none">
-          <Input
-            placeholder="Filtre por status..."
-            value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              table.getColumn("status")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm "
-          />
-        </div>
+    <div className="p-6">
+      <h3 className="text-xl font-semibold mb-4">🏆 Influenciadores com Meta Batida</h3>
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {influenciadores.map((inf, idx) => {
+          const nome = inf.cadastros_influenciadores?.influenciadores?.nome || "Sem nome"
+          const imagem = inf.cadastros_influenciadores?.influenciadores?.imagem
+          return (
+            <div
+              key={idx}
+              className="flex items-center gap-4 bg-muted/30 rounded-xl p-4 shadow-sm border"
+            >
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={imagem} />
+                <AvatarFallback>{nome.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <p className="font-semibold text-sm">{nome}</p>
+                <p className="text-xs text-muted-foreground">
+                  Meta: <strong>R$ {Number(inf.meta).toLocaleString('pt-BR')}</strong> — Atingido:{' '}
+                  <strong className="text-green-600">R$ {Number(inf.atingido).toLocaleString('pt-BR')}</strong>
+                </p>
+              </div>
+            </div>
+          )
+        })}
       </div>
-
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center"
-              >
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-      <TablePagination table={table} />
     </div>
   )
 }
-export default ExampleOne;

@@ -1,29 +1,29 @@
 // /app/api/eventos/route.ts
 import { prisma } from '@/lib/prisma';
+import { NextResponse } from "next/server"
 import { Prisma } from '@prisma/client';
 
 export async function GET() {
-  // Seu código GET está bom, mantido como está.
   try {
     const eventos = await prisma.eventos.findMany({
-      orderBy: { createdAt: 'desc' },
       include: {
+        participantes: {
+          include: {
+            influenciador: true, // opcional, se quiser os dados do influenciador
+          },
+        },
         plataformas: {
           include: {
             plataforma: true,
           },
         },
-        participantes: { // Adicionar participantes se quiser vê-los na listagem geral
-          include: {
-            influenciador: true,
-          }
-        }
       },
-    });
-    return Response.json(eventos);
-  } catch (error) {
-    console.error('Erro ao buscar eventos:', error);
-    return new Response('Erro interno ao buscar eventos.', { status: 500 });
+      orderBy: { data_evento: 'desc' },
+    })
+
+    return NextResponse.json(eventos)
+  } catch (err) {
+    return NextResponse.json({ error: "Erro ao buscar eventos" }, { status: 500 })
   }
 }
 

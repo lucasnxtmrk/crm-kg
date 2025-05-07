@@ -51,7 +51,7 @@ export default function EventoPage() {
   
 
   return (
-    <div className="min-h-[100vh]">
+    <div className="min-h-screen">
       <Tabs defaultValue="ranking" className="w-full h-full">
         <TabsList className="w-full flex justify-center bg-[#230621] rounded-xl shadow-lg text-white rounded-lg">
           <TabsTrigger value="ranking" className="px-4 rounded-full data-[state=inactive]:text-white">🏆 Ranking</TabsTrigger>
