@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { plataformas } from '@/lib/data';
-import { Influenciador } from '@/lib/types';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+
+type Plataforma = {
+  id: string;
+  nome: string;
+};
 
 type Props = {
   onCancel: () => void;
@@ -22,6 +26,22 @@ export function RecargaForm({ onCancel }: Props) {
     atingido: '',
   });
 
+  const [plataformas, setPlataformas] = useState<Plataforma[]>([]);
+
+  useEffect(() => {
+    const fetchPlataformas = async () => {
+      try {
+        const res = await fetch('/api/plataformas');
+        const data = await res.json();
+        setPlataformas(data);
+      } catch (err) {
+        console.error('Erro ao carregar plataformas:', err);
+      }
+    };
+
+    fetchPlataformas();
+  }, []);
+
   return (
     <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
@@ -35,11 +55,21 @@ export function RecargaForm({ onCancel }: Props) {
 
       <div>
         <Label>Plataforma</Label>
-        <Input
-          placeholder="ID da plataforma"
+        <Select
           value={form.plataformaId}
-          onChange={(e) => setForm({ ...form, plataformaId: e.target.value })}
-        />
+          onValueChange={(value) => setForm({ ...form, plataformaId: value })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione a plataforma" />
+          </SelectTrigger>
+          <SelectContent>
+            {plataformas.map((plataforma) => (
+              <SelectItem key={plataforma.id} value={plataforma.id}>
+                {plataforma.nome}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>

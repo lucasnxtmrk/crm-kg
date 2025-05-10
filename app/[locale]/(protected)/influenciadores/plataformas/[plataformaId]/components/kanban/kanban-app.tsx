@@ -95,8 +95,9 @@ const KanBanApp = () => {
         atingido: atingidoTotal,
         reembolso: reembolsoTotal,
         tipo: ultimaRecarga?.tipo || "valor",
-        status_meta: ultimaRecarga?.status_meta || "indefinido",
-      };
+        status_meta: ["completo", "incompleto", "indefinido"].includes(ultimaRecarga?.status_meta || "")
+        ? (ultimaRecarga?.status_meta as "completo" | "incompleto" | "indefinido")
+        : "indefinido",      };
     });
   }, [influenciadoresKanban, plataformaId]);
   

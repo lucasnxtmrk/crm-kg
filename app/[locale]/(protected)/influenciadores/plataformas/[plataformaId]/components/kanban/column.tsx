@@ -3,32 +3,21 @@
 import { useState, useMemo } from "react";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-
 import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import EmptyTask from "./empty";
 import TaskCard from "./task";
 import NewInfluenciadorModal from '@/components/NewInfluenciadorModal';
 import { Plus } from "lucide-react";
+import type { InfluenciadorKanban } from './task'
+
 
 type Column = {
   id: string;
   title: string;
-};
-
-type InfluenciadorKanban = {
-  id: string;
-  nome: string;
-  imagem?: string;
-  instagram: string;
-  cpf: string;
-  meta: number;
-  atingido: number;
-  status: string;
 };
 
 type Props = {

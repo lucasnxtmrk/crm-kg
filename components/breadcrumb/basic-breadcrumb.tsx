@@ -50,7 +50,7 @@ export default function BasicBreadcrumb() {
     };
 
     fetchLastSegmentName();
-  }, [pathname]);
+  }, [pathname, rest]);
 
   return (
     <Breadcrumb>

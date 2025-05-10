@@ -15,8 +15,8 @@ import DirectionProvider from "@/providers/direction-provider";
 import AuthProvider from "@/providers/auth.provider";
 
 export const metadata: Metadata = {
-  title: "KG Slots admin Template",
-  description: "created by codeshaper",
+  title: "KG Slots",
+  description: "Agência de Influencers",
 };
 
 export default async function RootLayout({

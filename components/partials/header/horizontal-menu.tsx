@@ -47,17 +47,17 @@ export default function HorizontalMenu() {
               submenus.length === 0 ? (
                 <MenubarMenu key={index}>
                   <MenubarTrigger asChild>
-                    <Link href={href} className=" cursor-pointer">
-                      <Icon icon={icon} className=" h-5 w-5 me-2" />
-                      {label}
+                  <Link href={href ?? "#"} className="cursor-pointer">
+                  <Icon icon={icon ?? "mdi:menu"} className="h-5 w-5 me-2" />
+                  {label}
                     </Link>
                   </MenubarTrigger>
                 </MenubarMenu>
               ) : (
                 <MenubarMenu key={index}>
                   <MenubarTrigger className=" cursor-pointer items-center">
-                    <Icon icon={icon} fontSize={18} className=" me-1.5 leading-1" />
-                    <span>{label}
+                  <Icon icon={icon ?? "lucide:circle"} fontSize={18} className="me-1.5 leading-1" />
+                  <span>{label}
 
                     </span>
                     <ChevronDown className="ms-1 h-4 w-4" />

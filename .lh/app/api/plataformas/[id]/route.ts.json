@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/api/plataformas/[id]/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746910071971,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746910071971,
+            "name": "Commit-0",
+            "content": "import { NextRequest, NextResponse } from \"next/server\";\r\nimport { prisma } from \"@/lib/prisma\";\r\n\r\n// Atualizar uma plataforma específica\r\nexport async function PATCH(\r\n  req: NextRequest,\r\n  { params }: { params: { id: string } }\r\n) {\r\n  try {\r\n    const body = await req.json();\r\n    const { nome, cor, grupoId } = body;\r\n\r\n    if (!nome && !cor && grupoId === undefined) {\r\n      return new NextResponse(\"Nenhum dado fornecido para atualizar\", { status: 400 });\r\n    }\r\n\r\n    const plataformaAtualizada = await prisma.plataformas.update({\r\n      where: { id: params.id },\r\n      data: {\r\n        ...(nome && { nome }),\r\n        ...(cor && { cor }),\r\n        ...(grupoId !== undefined && { grupoId }),\r\n      },\r\n    });\r\n\r\n    return NextResponse.json(plataformaAtualizada);\r\n  } catch (error) {\r\n    console.error(\"Erro ao atualizar plataforma:\", error);\r\n    return new NextResponse(\"Erro interno\", { status: 500 });\r\n  }\r\n}\r\nexport async function DELETE(\r\n  req: NextRequest,\r\n  { params }: { params: { id: string } }\r\n) {\r\n  try {\r\n    await prisma.plataformas.delete({\r\n      where: { id: params.id },\r\n    });\r\n\r\n    return new NextResponse(null, { status: 204 });\r\n  } catch (error) {\r\n    console.error(\"Erro ao deletar plataforma:\", error);\r\n    return new NextResponse(\"Erro interno\", { status: 500 });\r\n  }\r\n}\r\n"
+        }
+    ]
+}

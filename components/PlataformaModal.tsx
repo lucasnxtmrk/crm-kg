@@ -10,18 +10,25 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Pencil } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 
 interface PlataformaModalProps {
   open: boolean;
   onClose: () => void;
-  onSave: (data: {
-    id?: string;
-    nome: string;
-    imagem?: string;
-    cor: string;
-  }) => void;
+  onSave: (data: { id?: string; nome: string; imagem?: string; cor: string }) => void;
+  onDelete?: () => void; // 👈 nova prop opcional
   plataformaAtual?: {
     id: string;
     nome: string;
@@ -34,12 +41,14 @@ export default function PlataformaModal({
   open,
   onClose,
   onSave,
+  onDelete,
   plataformaAtual,
 }: PlataformaModalProps) {
   const [nome, setNome] = useState('');
   const [cor, setCor] = useState('#000000'); // cor padrão: preto
   const [imagemPreview, setImagemPreview] = useState<string | undefined>(undefined);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     if (open && plataformaAtual) {
@@ -150,15 +159,60 @@ export default function PlataformaModal({
     />
   </div>
 </div>
-
           {/* Botões */}
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" onClick={onClose}>
+          <div className="flex justify-between gap-2 pt-2">
+            {plataformaAtual && (
+  <div className="flex justify-start">
+    <AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button
+      variant="default"
+      style={{ backgroundColor: '#870D0E' }}
+      className="flex gap-1 items-center"
+    >
+      <Trash2 className="h-4 w-4" />
+    </Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Deseja realmente excluir esta plataforma?</AlertDialogTitle>
+      <AlertDialogDescription>
+        Essa ação não pode ser desfeita. A plataforma será permanentemente removida do sistema.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogAction
+        className="bg-destructive hover:bg-destructive/90"
+        onClick={async () => {
+          const response = await fetch(`/api/plataformas/${plataformaAtual?.id}`, {
+            method: 'DELETE',
+          });
+
+          if (response.ok) {
+  if (onDelete) onDelete(); // 👈 atualiza a lista no front
+  onClose();
+} else {
+  alert('Erro ao excluir plataforma.');
+}
+        }}
+      >
+        Confirmar
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+  </div>
+)}
+<div className='flex justify-end gap-2'>
+  <Button variant="ghost" onClick={onClose}>
               Cancelar
             </Button>
             <Button onClick={handleSubmit}>
               {plataformaAtual ? 'Salvar Alterações' : 'Cadastrar Plataforma'}
             </Button>
+</div>
+            
           </div>
         </div>
       </DialogContent>

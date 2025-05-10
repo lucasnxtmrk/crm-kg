@@ -1,0 +1,22 @@
+{
+    "sourceFile": "app/[locale]/layout.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1746910555123,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746910562111,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -15,9 +15,9 @@\n import AuthProvider from \"@/providers/auth.provider\";\r\n \r\n export const metadata: Metadata = {\r\n   title: \"KG Slots\",\r\n-  description: \"created by codeshaper\",\r\n+  description: \"Agência de Influencers\",\r\n };\r\n \r\n export default async function RootLayout({\r\n   children,\r\n"
+                }
+            ],
+            "date": 1746910555123,
+            "name": "Commit-0",
+            "content": "import type { Metadata } from \"next\";\r\nimport { Inter } from \"next/font/google\";\r\nimport \"./globals.css\";\r\nimport \"./theme.css\"\r\nimport { ThemeProvider } from \"@/providers/theme-provider\";\r\nimport MountedProvider from \"@/providers/mounted.provider\";\r\nimport { Toaster } from '@/components/ui/toaster'\r\nimport { Toaster as SonnerToaster } from \"@/components/ui/sonner\"\r\nconst inter = Inter({ subsets: [\"latin\"] });\r\n// language \r\nimport { getLangDir } from 'rtl-detect';\r\nimport { NextIntlClientProvider } from 'next-intl';\r\nimport { getMessages } from 'next-intl/server';\r\nimport DirectionProvider from \"@/providers/direction-provider\";\r\nimport AuthProvider from \"@/providers/auth.provider\";\r\n\r\nexport const metadata: Metadata = {\r\n  title: \"KG Slots\",\r\n  description: \"created by codeshaper\",\r\n};\r\n\r\nexport default async function RootLayout({\r\n  children,\r\n  params: { locale },\r\n}: Readonly<{\r\n  children: React.ReactNode;\r\n  params: { locale: string };\r\n}>) {\r\n\r\n  const messages = await getMessages();\r\n  const direction = getLangDir(locale);\r\n  return (\r\n    <html lang={locale} dir={direction}>\r\n      <body className={`${inter.className} dashcode-app`}>\r\n        <NextIntlClientProvider messages={messages} locale={locale}>\r\n          <AuthProvider>\r\n            <ThemeProvider attribute=\"class\"\r\n\r\n              defaultTheme=\"light\">\r\n              <MountedProvider>\r\n\r\n                <DirectionProvider direction={direction}>\r\n                  {children}\r\n                </DirectionProvider>\r\n\r\n              </MountedProvider>\r\n              <Toaster />\r\n              <SonnerToaster />\r\n            </ThemeProvider>\r\n          </AuthProvider>\r\n        </NextIntlClientProvider>\r\n      </body>\r\n    </html>\r\n  );\r\n}\r\n"
+        }
+    ]
+}

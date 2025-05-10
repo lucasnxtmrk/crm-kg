@@ -14,6 +14,8 @@ import { Loader2 } from 'lucide-react';
 import { loginUser } from '@/action/auth-action';
 import { toast } from "sonner"
 import { useRouter } from '@/components/navigation';
+import { signIn } from "next-auth/react";
+
 
 const schema = z.object({
   email: z.string().email({ message: "Your email is invalid." }),
@@ -52,17 +54,20 @@ const LoginForm = () => {
   const onSubmit = (data: z.infer<typeof schema>) => {
     startTransition(async () => {
       try {
-        const response = await loginUser(data);
 
-        if (!!response.error) {
-          toast("Event has been created", {
-            description: "Sunday, December 03, 2023 at 9:00 AM",
+const result = await signIn("credentials", {
+  email: data.email,
+  password: data.password,
+  redirect: false,
+});
 
-          })
-        } else {
-          router.push('/influenciadores/');
-          toast.success("Você está logado");
-        }
+        if (result?.error) {
+  toast.error("Email ou senha inválidos");
+} else {
+  toast.success("Você está logado");
+  router.push("/influenciadores");
+}
+
       } catch (err: any) {
         toast.error(err.message);
       }
@@ -132,7 +137,7 @@ const LoginForm = () => {
           <Label htmlFor="checkbox">Mantenha-me conectado</Label>
         </div>
         <Link
-          href="/forgot-password"
+          href="/auth/recuperar-senha"
           className="text-sm text-default-800 dark:text-default-400 leading-6 font-medium"
         >
           Esqueceu a senha?

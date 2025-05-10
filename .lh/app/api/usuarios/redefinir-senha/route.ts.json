@@ -1,0 +1,22 @@
+{
+    "sourceFile": "app/api/usuarios/redefinir-senha/route.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1746914170019,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746914175734,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,22 @@\n+import { NextRequest, NextResponse } from 'next/server';\r\n+import { prisma } from '@/lib/prisma';\r\n+\r\n+export async function POST(req: NextRequest) {\r\n+  const { email } = await req.json();\r\n+\r\n+  if (!email) {\r\n+    return new NextResponse(\"Email é obrigatório\", { status: 400 });\r\n+  }\r\n+\r\n+  const usuario = await prisma.usuarios.findUnique({ where: { email } });\r\n+\r\n+  // Mesmo que o e-mail não exista, retornamos uma resposta genérica\r\n+  if (!usuario) {\r\n+    return new NextResponse(null, { status: 204 });\r\n+  }\r\n+\r\n+  // Aqui futuramente geramos token e enviamos e-mail\r\n+  console.log(`Token de recuperação enviado para: ${email}`);\r\n+\r\n+  return new NextResponse(null, { status: 204 });\r\n+}\r\n"
+                }
+            ],
+            "date": 1746914170019,
+            "name": "Commit-0",
+            "content": "import { NextRequest, NextResponse } from 'next/server';\r\nimport { prisma } from '@/lib/prisma';\r\n\r\nexport async function POST(req: NextRequest) {\r\n  const { email } = await req.json();\r\n\r\n  if (!email) {\r\n    return new NextResponse(\"Email é obrigatório\", { status: 400 });\r\n  }\r\n\r\n  const usuario = await prisma.usuario.findUnique({ where: { email } });\r\n\r\n  // Mesmo que o e-mail não exista, retornamos uma resposta genérica\r\n  if (!usuario) {\r\n    return new NextResponse(null, { status: 204 });\r\n  }\r\n\r\n  // Aqui futuramente geramos token e enviamos e-mail\r\n  console.log(`Token de recuperação enviado para: ${email}`);\r\n\r\n  return new NextResponse(null, { status: 204 });\r\n}\r\n"
+        }
+    ]
+}

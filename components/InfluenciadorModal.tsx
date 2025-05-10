@@ -39,10 +39,8 @@ import { motion } from "framer-motion";
 import { Loader2 } from 'lucide-react';
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { size } from "@/lib/type";
+import { size } from "@/lib/types";
 import SalariosMensaisModal from "@/components/SalariosMensaisModal";
-
-
 
 
 interface OptionType {
@@ -59,7 +57,6 @@ interface Props {
 }
 
 const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) => {
-  if (!influenciador) return null;
   const [instagramHandle, setInstagramHandle] = useState<string>("");
   const [hoverInstagram, setHoverInstagram] = useState(false);
   const [plataformasSelecionadas, setPlataformasSelecionadas] = useState<string[]>([]);
@@ -69,14 +66,14 @@ const InfluenciadorModal = ({ open, onClose, influenciador, onUpdate }: Props) =
   const [openMotivo, setOpenMotivo] = useState(false);
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [nome, setNome] = useState<string>("");
-  const [email, setEmail]       = useState("");
-  const [cpf, setCpf]           = useState("");
+  const [email, setEmail] = useState("");
+  const [cpf, setCpf] = useState("");
   const [chavepix, setChavePix] = useState("");
   const [localInfluenciador, setLocalInfluenciador] = useState<Influenciador | null>(null);
   const [plataformas, setPlataformas] = useState<Plataforma[]>([]);
   const [contratado, setContratado] = useState(false);
-const [salarioFixo, setSalarioFixo] = useState(false);
-const [modalSalariosOpen, setModalSalariosOpen] = useState(false);
+  const [salarioFixo, setSalarioFixo] = useState(false);
+  const [modalSalariosOpen, setModalSalariosOpen] = useState(false);
 
 
   useEffect(() => {
@@ -300,8 +297,9 @@ useEffect(() => {
 
 // Gera uma imagem "random" baseada no nome (usando ui-avatars.com)
 const fallbackImage = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-  influenciador.nome
+  influenciador?.nome || "Sem Nome"
 )}&background=random&color=fff`;
+
 
 
 const totalAtingido = useMemo(() => {
@@ -327,13 +325,15 @@ const totalDepositantes = useMemo(() => {
 
   return (
     <>
-<Dialog open={open} onOpenChange={(isOpen) => {
+    <Dialog  open={open} onOpenChange={(isOpen) => {
   if (!isOpen) {
     onClose(); // fecha quando clica fora ou no X
   }
-}}><DialogContent size="xl">
-
-        <div className="grid grid-cols-[35%_1fr] gap-8">
+}}>
+  {influenciador && (
+    <DialogContent size="full">
+    <div className="w-full">
+        <div className="grid grid-cols-[45%_1fr] gap-8">
         <Button
   className={cn(
     "fixed bottom-6 right-6 z-50 flex items-center gap-2",
@@ -811,22 +811,24 @@ const totalDepositantes = useMemo(() => {
 
           </Tabs>
         </div>
-      </DialogContent>
+    </div>
+    </DialogContent>
+    )}
     </Dialog>
-
       {/* 2) RecargasModal irmão do Dialog */}
       <RecargasModal
-  open={recargaModalOpen}
+        open={recargaModalOpen}
   onClose={() => setRecargaModalOpen(false)}
   onSave={(novaRecarga) => {
+    if (!influenciador) return; // ✅ impede erro de acesso em null
+  
     const cadastroExistente = influenciador.cadastros_influenciadores.find(
       (c) => c.id === novaRecarga.cadastro_id
     );
-    
+  
     let novosCadastros;
-    
+  
     if (cadastroExistente) {
-      // Já existe → atualiza o cadastro
       novosCadastros = influenciador.cadastros_influenciadores.map((cadastro) => {
         if (cadastro.id === novaRecarga.cadastro_id) {
           return {
@@ -837,7 +839,6 @@ const totalDepositantes = useMemo(() => {
         return cadastro;
       });
     } else {
-      // Não existe → cria um novo cadastro
       novosCadastros = [
         ...influenciador.cadastros_influenciadores,
         {
@@ -849,23 +850,21 @@ const totalDepositantes = useMemo(() => {
         },
       ];
     }
+  
     const influenciadorAtualizado = {
       ...influenciador,
       cadastros_influenciadores: novosCadastros,
     };
-
-    // 1. Atualiza o influenciador principal
+  
     onUpdate?.(influenciadorAtualizado);
-
-    // 2. Atualiza o localInfluenciador no próprio modal!
     setLocalInfluenciador(influenciadorAtualizado);
-
     setRecargaModalOpen(false);
   }}
-  selectedInfluenciador={influenciador}
-/>
-<SalariosMensaisModal
-  open={modalSalariosOpen}
+  
+        selectedInfluenciador={influenciador ?? undefined}
+      />
+      <SalariosMensaisModal
+         open={modalSalariosOpen}
   onClose={() => setModalSalariosOpen(false)}
   salariosExistentes={localInfluenciador?.salarios_mensais || []}
   onSave={(novos) => {
@@ -884,11 +883,8 @@ const totalDepositantes = useMemo(() => {
         salarios_mensais: [...filtrados, ...novos],
       };
     });
-  }}
-/>
-
-
-
+        }}
+      />
   </>
   
   );

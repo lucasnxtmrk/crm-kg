@@ -1,66 +1,40 @@
+'use client';
+
 import { Link } from '@/i18n/routing';
 import LoginForm from "@/components/partials/auth/login-form";
-import Image from "next/image";
-import Social from "@/components/partials/auth/social";
-import Copyright from "@/components/partials/auth/copyright";
-import Logo from "@/components/partials/auth/logo";
-const Login = ({ params: { locale } }: { params: { locale: string } }) => {
+import Logo from "@/components/logo";
+import Image from 'next/image';
+export default function Login3() {
   return (
-    <>
-      <div className="flex w-full items-center overflow-hidden min-h-dvh h-dvh basis-full">
-        <div className="overflow-y-auto flex flex-wrap w-full h-dvh">
-          <div
-            className="lg:block hidden flex-1 overflow-hidden text-[40px] leading-[48px] text-default-600 
- relative z-[1] bg-default-50"
-          >
-            <div className="absolute left-0 2xl:bottom-[-160px] bottom-[-130px] h-full w-full z-[-1]">
-              <Image
-                src="/images/auth/ils1.svg"
-                alt=""
-                width={300}
-                height={300}
-                className="mb-10 w-full h-full"
-              />
-            </div>
-          </div>
-          <div className="flex-1 relative">
-            <div className=" h-full flex flex-col  dark:bg-default-100 bg-white">
-              <div className="max-w-[524px] md:px-[42px] md:py-[44px] p-7  mx-auto w-full text-2xl text-default-900  mb-3 h-full flex flex-col justify-center">
-                <Logo />
-                <div className="text-center 2xl:mb-10 mb-4">
-                  <h4 className="font-medium">Sign in</h4>
-                  <div className="text-default-500 text-base">
-                    Sign in to your account to start using KG Slots
-                  </div>
-                </div>
-                <LoginForm />
-                <div className="relative border-b-[#9AA2AF] border-opacity-[16%] border-b pt-6">
-                  <div className="absolute inline-block bg-default-50 dark:bg-default-100 left-1/2 top-1/2 transform -translate-x-1/2 px-4 min-w-max text-sm text-default-500 font-normal">
-                    Or continue with
-                  </div>
-                </div>
-                <div className="max-w-[242px] mx-auto mt-8 w-full">
-                  <Social locale={locale} />
-                </div>
-                <div className="md:max-w-[345px] mx-auto font-normal text-default-500 mt-12 uppercase text-sm">
-                  Don’t have an account?{" "}
-                  <Link
-                    href="/auth/register"
-                    className="text-default-900  font-medium hover:underline"
-                  >
-                    Sign up
-                  </Link>
-                </div>
-              </div>
-              <div className="text-xs font-normal text-default-500  z-[999] pb-10 text-center">
-                <Copyright />
-              </div>
-            </div>
-          </div>
+    <div
+      className="flex w-full min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat"
+      style={{backgroundColor:"#230621"}}
+    >
+      <div className="bg-white dark:bg-default-50 p-10 rounded-md shadow-md w-full max-w-md space-y-8">
+        
+        {/* Logo centralizada e maior */}
+        <div className="flex justify-center items-center mb-2">
+          <Link href="/">
+            <div className="w-[180px] h-[60px] relative">
+  <Image
+    src="/images/logo/logo.svg"
+    alt="Logo"
+    fill
+    className="object-contain"
+  />
+</div>
+          </Link>
         </div>
-      </div>
-    </>
-  );
-};
 
-export default Login;
+        {/* Título */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-semibold text-default-900">Entrar na Plataforma</h1>
+          <p className="text-sm text-default-500">Acesse sua conta para continuar</p>
+        </div>
+
+        {/* Formulário de login */}
+        <LoginForm />
+      </div>
+    </div>
+  );
+}

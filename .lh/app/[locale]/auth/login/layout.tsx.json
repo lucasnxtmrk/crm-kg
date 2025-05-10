@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/[locale]/auth/login/layout.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1746912115853,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1746912115853,
+            "name": "Commit-0",
+            "content": "import { Metadata } from \"next\";\r\n\r\nexport const metadata: Metadata = {\r\n  title: \"KG Slots\",\r\n  description: \"Agência de Influencers\",\r\n};\r\nconst Layout = ({ children }: { children: React.ReactNode }) => {\r\n  return <>{children}</>;\r\n};\r\n\r\nexport default Layout;\r\n"
+        }
+    ]
+}

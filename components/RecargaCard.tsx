@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { plataformas } from "@/lib/data";
 import Image from "next/image";
 import { Influenciador } from "@/lib/types";
 
@@ -66,9 +65,24 @@ interface Props {
 }
 
 export default function RecargaCard({ rec, cadastro, onUpdateRecarga }: Props) {
+  const [plataformas, setPlataformas] = useState<{ id: string; nome: string; imagem?: string }[]>([]);
+useEffect(() => {
+  const fetchPlataformas = async () => {
+    try {
+      const res = await fetch("/api/plataformas");
+      const data = await res.json();
+      setPlataformas(data);
+    } catch (error) {
+      console.error("Erro ao carregar plataformas:", error);
+    }
+  };
+
+  fetchPlataformas();
+}, []);
   const plataforma = cadastro
-    ? plataformas.find((p) => p.id === cadastro.plataforma_id)
-    : undefined;
+  ? plataformas.find((p) => p.id === cadastro.plataforma_id)
+  : undefined;
+  
   const tipoMeta = rec.tipo;
 
   const handleUpdate = (changes: Partial<Influenciador["recargas"][0]>) => {

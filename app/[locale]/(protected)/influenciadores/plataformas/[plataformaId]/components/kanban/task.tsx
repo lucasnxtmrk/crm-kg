@@ -16,7 +16,7 @@ import DeleteConfirmationDialog from "@/components/delete-confirmation-dialog";
 import MotivoBanimentoDialog from '@/components/MotivoBanimentoDialog'; // importa
 
 
-type InfluenciadorKanban = {
+export type InfluenciadorKanban = {
   id: string;
   nome: string;
   imagem?: string;

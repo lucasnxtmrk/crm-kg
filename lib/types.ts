@@ -1,11 +1,11 @@
-export type size = "sm" | "default" | "md" | "lg" | "xl" | "full";
-
 // Representa os status usados no Kanban
 export type StatusKanban = {
   id: string;
   title: string;
   ocultoNoKanban?: boolean;
 };
+
+export type size = "sm" | "default" | "md" | "lg" | "xl" | "full";
 
 export const statusKanbanList: StatusKanban[] = [
   { id: 'bronze', title: 'Bronze' },
@@ -86,7 +86,6 @@ export type Evento = {
     }
   }[]
 }
-
 
 
 // Influenciador principal

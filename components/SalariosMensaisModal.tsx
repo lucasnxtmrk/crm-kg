@@ -70,7 +70,7 @@ export default function SalariosMensaisModal({
     });
 
     setValoresPorAno(novoEstado);
-  }, [open, salariosExistentes, anosComDados]);
+  }, [open, salariosExistentes, anosComDados, anoAtual]);
 
   const handleChange = (mes: number, valor: string) => {
     setValoresPorAno(prev => ({

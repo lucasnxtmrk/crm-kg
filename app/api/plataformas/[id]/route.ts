@@ -29,3 +29,18 @@ export async function PATCH(
     return new NextResponse("Erro interno", { status: 500 });
   }
 }
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    await prisma.plataformas.delete({
+      where: { id: params.id },
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error("Erro ao deletar plataforma:", error);
+    return new NextResponse("Erro interno", { status: 500 });
+  }
+}

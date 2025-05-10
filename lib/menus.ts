@@ -1,4 +1,7 @@
 
+import { signOut } from "next-auth/react";
+
+
 
 export type SubChildren = {
   href: string;
@@ -32,7 +35,7 @@ export type Group = {
   id: string;
 };
 
-export function getMenuList(pathname: string): Group[] {
+export function getMenuList(pathname: string, t: unknown): Group[] {
   return [
     {
       groupLabel: "Dashboard",
@@ -119,22 +122,21 @@ export function getMenuList(pathname: string): Group[] {
       ],
     },
     {
-      groupLabel: "Conta",
-      id: "account",
-      menus: [
-        {
-          id: "logout",
-          href: "#", // não precisa navegar pra outra página
-          label: "Sair",
-          active: false, // nunca precisa ficar ativo
-          icon: "heroicons-outline:logout",
-          submenus: [],
-          onClick: () => {
-            signOut();
-          },
-        },
-      ],
+  groupLabel: "Conta",
+  id: "account",
+  menus: [
+    {
+      id: "logout",
+      label: "Sair",
+      active: false,
+      icon: "heroicons-outline:logout",
+      submenus: [],
+      onClick: () => {
+        signOut({ callbackUrl: "/auth/login" }); // ✅ logout e redirecionamento
+      },
     },
+  ],
+},
   ];
   
 }

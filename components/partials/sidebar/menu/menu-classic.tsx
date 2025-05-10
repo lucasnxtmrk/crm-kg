@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react'
+import React from 'react';
 import { Ellipsis, LogOut } from "lucide-react";
 import { usePathname } from "@/components/navigation";
 import { cn } from "@/lib/utils";
@@ -17,30 +17,25 @@ import MenuLabel from "../common/menu-label";
 import MenuItem from "../common/menu-item";
 import { CollapseMenuButton } from "../common/collapse-menu-button";
 import MenuWidget from "../common/menu-widget";
-import SearchBar from '@/components/partials/sidebar/common/search-bar'
-import TeamSwitcher from '../common/team-switcher'
+import SearchBar from '@/components/partials/sidebar/common/search-bar';
+import TeamSwitcher from '../common/team-switcher';
 import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation';
 import { getLangDir } from 'rtl-detect';
 import Logo from '@/components/logo';
 import SidebarHoverToggle from '@/components/partials/sidebar/sidebar-hover-toggle';
 import { useMenuHoverConfig } from '@/hooks/use-menu-hover';
 import { useMediaQuery } from '@/hooks/use-media-query';
 
-
-export function MenuClassic({ }) {
-    // translate
-    const t = useTranslations("Menu")
+export function MenuClassic() {
+    const t = useTranslations("Menu");
     const pathname = usePathname();
-    const params = useParams<{ locale: string; }>();
+    const params = useParams<{ locale: string }>();
     const direction = getLangDir(params?.locale ?? '');
-
-    const isDesktop = useMediaQuery('(min-width: 1280px)')
-
-
+    const isDesktop = useMediaQuery('(min-width: 1280px)');
     const menuList = getMenuList(pathname, t);
-    const [config, setConfig] = useConfig()
-    const collapsed = config.collapsed
+    const [config, setConfig] = useConfig();
+    const collapsed = config.collapsed;
     const [hoverConfig] = useMenuHoverConfig();
     const { hovered } = hoverConfig;
 
@@ -63,21 +58,15 @@ export function MenuClassic({ }) {
             {isDesktop && (
                 <div className="flex items-center justify-between  px-4 py-4">
                     <Logo />
-                    <SidebarHoverToggle />
                 </div>
             )}
-
-
-
 
             <ScrollArea className="[&>div>div[style]]:!block" dir={direction}>
                 {isDesktop && (
                     <div className={cn(' space-y-3 mt-6 ', {
                         'px-4': !collapsed || hovered,
                         'text-center': collapsed || !hovered
-                    })}>
-                    </div>
-
+                    })}></div>
                 )}
 
                 <nav className="mt-8 h-full w-full">
@@ -85,7 +74,7 @@ export function MenuClassic({ }) {
                         {menuList?.map(({ groupLabel, menus }, index) => (
                             <li className={cn("w-full", groupLabel ? "" : "")} key={index}>
                                 {(!collapsed || hovered) && groupLabel || !collapsed === undefined ? (
-                                    <MenuLabel label={groupLabel} />
+                                    <MenuLabel label={groupLabel ?? ''} />
                                 ) : collapsed && !hovered && !collapsed !== undefined && groupLabel ? (
                                     <TooltipProvider>
                                         <Tooltip delayDuration={100}>
@@ -99,51 +88,50 @@ export function MenuClassic({ }) {
                                             </TooltipContent>
                                         </Tooltip>
                                     </TooltipProvider>
-                                ) : (
-                                    null
+                                ) : null}
+
+                                {menus.map(({ href, label, icon, active, id, submenus }, index) =>
+                                    submenus.length === 0 ? (
+                                        <div className="w-full mb-2 last:mb-0" key={index}>
+                                            <TooltipProvider disableHoverableContent>
+                                                <Tooltip delayDuration={100}>
+                                                    <TooltipTrigger asChild>
+                                                        <div>
+                                                            <MenuItem
+                                                                label={label ?? ''}
+                                                                icon={icon ?? 'lucide:circle'}
+                                                                href={href ?? '/'}
+                                                                active={active ?? false}
+                                                                id={id}
+                                                                collapsed={collapsed}
+                                                            />
+                                                        </div>
+                                                    </TooltipTrigger>
+                                                    {collapsed && (
+                                                        <TooltipContent side="right">
+                                                            {label}
+                                                        </TooltipContent>
+                                                    )}
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                    ) : (
+                                        <div className="w-full mb-2" key={index}>
+                                            <CollapseMenuButton
+                                                icon={icon ?? 'lucide:circle'}
+                                                label={label ?? ''}
+                                                active={active ?? false}
+                                                submenus={submenus}
+                                                collapsed={collapsed}
+                                                id={id}
+                                            />
+                                        </div>
+                                    )
                                 )}
-
-                                {menus.map(
-                                    ({ href, label, icon, active, id, submenus }, index) =>
-                                        submenus.length === 0 ? (
-                                            <div className="w-full mb-2 last:mb-0" key={index}>
-                                                <TooltipProvider disableHoverableContent>
-                                                    <Tooltip delayDuration={100}>
-                                                        <TooltipTrigger asChild>
-
-                                                            <div>
-
-                                                                <MenuItem label={label} icon={icon} href={href} active={active} id={id} collapsed={collapsed} />
-                                                            </div>
-                                                        </TooltipTrigger>
-                                                        {collapsed && (
-                                                            <TooltipContent side="right">
-                                                                {label}
-                                                            </TooltipContent>
-                                                        )}
-                                                    </Tooltip>
-                                                </TooltipProvider>
-                                            </div>
-                                        ) : (
-                                            <div className="w-full mb-2" key={index}>
-                                                <CollapseMenuButton
-                                                    icon={icon}
-                                                    label={label}
-                                                    active={active}
-                                                    submenus={submenus}
-                                                    collapsed={collapsed}
-                                                    id={id}
-
-                                                />
-                                            </div>
-                                        )
-                                )}
-
                             </li>
                         ))}
                     </ul>
                 </nav>
-
             </ScrollArea>
         </>
     );

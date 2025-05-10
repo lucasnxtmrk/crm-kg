@@ -1,0 +1,26 @@
+{
+    "sourceFile": "lib/data.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1746913689208,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1746913709831,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,23 +1,7 @@\n-// user data \r\n-const users = [\r\n-  {\r\n-    name: \"Lucas Oliveira \",\r\n-    email: \"dashcode@codeshaper.net\",\r\n-    password: \"password\",\r\n-    image: '/images/users/user-1.jpg',\r\n-  },\r\n-  {\r\n-    name: \"Lucas de Oliveira\",\r\n-    email: \"lucas@agenciakg.com\",\r\n-    password: \"delus9798\",\r\n-    image: '/images/users/user-2.jpg',\r\n-  }\r\n-  \r\n-]\r\n+import { prisma } from '@/lib/prisma';\r\n \r\n-export type User = (typeof users)[number]\r\n-\r\n-export const getUserByEmail = (email: string) => {\r\n-  return users.find((user) => user.email === email)\r\n+export async function getUserByEmail(email: string) {\r\n+  return await prisma.usuario.findUnique({\r\n+    where: { email },\r\n+  });\r\n }\r\n-\r\n"
+                },
+                {
+                    "date": 1746913717988,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n import { prisma } from '@/lib/prisma';\r\n \r\n export async function getUserByEmail(email: string) {\r\n-  return await prisma.usuario.findUnique({\r\n+  return await prisma.usuarios.findUnique({\r\n     where: { email },\r\n   });\r\n }\r\n"
+                }
+            ],
+            "date": 1746913689208,
+            "name": "Commit-0",
+            "content": "// user data \r\nconst users = [\r\n  {\r\n    name: \"Lucas Oliveira \",\r\n    email: \"dashcode@codeshaper.net\",\r\n    password: \"password\",\r\n    image: '/images/users/user-1.jpg',\r\n  },\r\n  {\r\n    name: \"Lucas de Oliveira\",\r\n    email: \"lucas@agenciakg.com\",\r\n    password: \"delus9798\",\r\n    image: '/images/users/user-2.jpg',\r\n  }\r\n  \r\n]\r\n\r\nexport type User = (typeof users)[number]\r\n\r\nexport const getUserByEmail = (email: string) => {\r\n  return users.find((user) => user.email === email)\r\n}\r\n\r\n"
+        }
+    ]
+}

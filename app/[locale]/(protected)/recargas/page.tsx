@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { RecargaTable } from "./components/table";
 import RecargasModal from "@/components/RecargasModal";
-import { influenciadores } from "@/lib/types";
+import { Influenciador } from "@/lib/types";
 
 export default function RecargasPage() {
 

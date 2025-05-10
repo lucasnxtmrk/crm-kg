@@ -197,23 +197,33 @@ export default function InfluenciadoresPage() {
       </Tabs>
 
       <PlataformaModal
-        open={modalPlataformaAberto}
-        onClose={() => {
-          setModalPlataformaAberto(false);
-          setPlataformaEditando(null);
-        }}
-        onSave={async (dados) => {
-          await fetch('/api/plataformas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados),
-          });
-          setModalPlataformaAberto(false);
-          setPlataformaEditando(null);
-          buscarPlataformas();
-        }}
-        plataformaAtual={plataformaEditando}
-      />
+  open={modalPlataformaAberto}
+  onClose={() => {
+    setModalPlataformaAberto(false);
+    setPlataformaEditando(null);
+  }}
+  onSave={async (dados) => {
+    const isEdicao = !!dados.id;
+
+    const response = await fetch(isEdicao ? `/api/plataformas/${dados.id}` : '/api/plataformas', {
+      method: isEdicao ? 'PATCH' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dados),
+    });
+
+    if (!response.ok) {
+      alert('Erro ao salvar a plataforma');
+      return;
+    }
+
+    setModalPlataformaAberto(false);
+    setPlataformaEditando(null);
+    buscarPlataformas();
+  }}
+  onDelete={buscarPlataformas} // 👈 aqui está o segredo
+  plataformaAtual={plataformaEditando}
+/>
+
 
       <GrupoModal
         open={modalGrupoAberto}

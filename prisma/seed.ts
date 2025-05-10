@@ -1,6 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
-const { faker } = require("@faker-js/faker");
-const { v4: uuidv4 } = require("uuid");
+import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker";
+import { v4 as uuidv4 } from "uuid";
 
 const prisma = new PrismaClient();
 
@@ -32,6 +32,7 @@ async function main() {
   await prisma.eventos.deleteMany();
   await prisma.plataformas.deleteMany();
   await prisma.grupos.deleteMany();
+  await prisma.usuarios.deleteMany();
 
   await prisma.grupos.createMany({ data: grupos });
   await prisma.plataformas.createMany({ data: plataformas });
@@ -48,6 +49,15 @@ async function main() {
       },
     });
   }
+
+  await prisma.usuarios.create({
+    data: {
+      nome: "Super Admin",
+      email: "admin@kg.com",
+      senha: "123456", // ✅ Substituir por hash no futuro
+      role: "SUPERADMIN",
+    },
+  });
 
   for (let i = 0; i < 10; i++) {
     const nome = faker.person.fullName();
@@ -123,7 +133,7 @@ async function main() {
     });
   }
 
-  console.log("✅ Seed completo com dados realistas!");
+  console.log("\u2705 Seed completo com dados realistas!");
 }
 
 main()

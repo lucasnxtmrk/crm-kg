@@ -7,6 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model usuarios {
+  id        String   @id @default(uuid()) @db.Uuid
+  nome      String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
+  senha     String   @db.VarChar(255)
+  role      Role     @default(ADMIN) // 👈 enum que define se é admin ou superadmin
+  ativo     Boolean  @default(true)
+  criadoEm  DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("usuarios")
+}
+
+enum Role {
+  ADMIN
+  SUPERADMIN
+}
+
 model cadastros_influenciadores {
   id                          String @id @db.Uuid
   influenciador_id            String @db.Uuid
@@ -33,12 +51,12 @@ model influenciadores {
   status           String   @db.VarChar(20)
   motivo_banimento String?
 
-  contratado   Boolean @default(false) // tem contrato com a agência
-  salario_fixo Boolean @default(false) // recebe salário mensal fixo?
+  contratado   Boolean @default(false)
+  salario_fixo Boolean @default(false)
 
   cadastros_influenciadores cadastros_influenciadores[]
   salarios_mensais          salarios_mensais[]
-  participacoes             ParticipanteEvento[] // <-- adicione isso
+  participacoes             ParticipanteEvento[]
 
   @@map("influenciadores")
 }
@@ -58,12 +76,8 @@ model plataformas {
   grupoId          String? @db.Uuid
   grupo            grupos? @relation(fields: [grupoId], references: [id])
 
-  // Remova a linha abaixo
-  // eventos         eventos[] // <-- Remova esta linha
-
   cadastros_influenciadores cadastros_influenciadores[]
-  // Relacionamento através de EventoPlataforma
-  eventosPlataforma EventoPlataforma[] // <-- Mantém a relação intermediária
+  eventosPlataforma         EventoPlataforma[]
 
   @@map("plataformas")
 }
@@ -80,7 +94,7 @@ model recargas {
   depositantes_meta     Int
   depositantes_atingido Int
 
-  tipo String @db.VarChar(20) // normal | evento
+  tipo String @db.VarChar(20)
 
   status_meta      String @db.VarChar(20)
   reembolso_status String @db.VarChar(20)
@@ -106,18 +120,18 @@ model salarios_mensais {
 model eventos {
   id            String               @id @default(uuid()) @db.Uuid
   nome          String
-  plataformas   EventoPlataforma[]   // <-- nova relação
+  plataformas   EventoPlataforma[]
   participantes ParticipanteEvento[]
-  data_evento   DateTime? // <-- ADICIONE ESTE CAMPO (Data do evento)
+  data_evento   DateTime?
 
-  createdAt DateTime @default(now()) // ✅ já tinha
+  createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
 model ParticipanteEvento {
   id            String @id @default(uuid())
-  evento_id     String @db.Uuid // <- Adicionado
-  influencer_id String @db.Uuid // <- Adicionado
+  evento_id     String @db.Uuid
+  influencer_id String @db.Uuid
   meta          Int
   atingido      Int
 
@@ -127,7 +141,7 @@ model ParticipanteEvento {
 
 model EventoPlataforma {
   id           String       @id @default(cuid())
-  eventoId     String       @db.Uuid // Altere para UUID
+  eventoId     String       @db.Uuid
   plataformaId String       @db.VarChar(50)
 
   evento       eventos      @relation(fields: [eventoId], references: [id])
@@ -135,4 +149,3 @@ model EventoPlataforma {
 
   @@unique([eventoId, plataformaId])
 }
-

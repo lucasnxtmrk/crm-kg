@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card'
 import { Plus, Pencil } from 'lucide-react'
 import { EventoModal } from '@/components/EventosModal'
 import { EventoFormData, Plataforma } from '@/lib/types'
+import Image from 'next/image'
 
 interface Evento {
   id: string
@@ -165,11 +166,13 @@ export default function EventosPage() {
                         className="flex items-center gap-2 bg-gray-100 rounded px-2 py-1 text-sm text-gray-600"
                       >
                         {plataforma.imagem && (
-                          <img
-                            src={plataforma.imagem}
-                            alt={plataforma.nome}
-                            className="w-4 h-4 rounded"
-                          />
+                          <Image
+  src={plataforma.imagem}
+  alt={plataforma.nome}
+  width={16}
+  height={16}
+  className="rounded"
+/>
                         )}
                         {plataforma.nome}
                       </div>
