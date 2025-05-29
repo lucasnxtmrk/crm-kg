@@ -81,6 +81,7 @@
     "next-themes": "^0.3.0",
     "nextra": "^2.13.4",
     "nextra-theme-docs": "^2.13.4",
+    "pm2": "^6.0.5",
     "prisma": "^6.6.0",
     "quill": "^2.0.2",
     "react": "18.2.0",
@@ -110,7 +111,7 @@
     "@faker-js/faker": "^8.4.1",
     "@types/jest": "^29.5.14",
     "@types/leaflet": "^1.9.12",
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.17",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/rtl-detect": "^1.0.3",
@@ -123,6 +124,6 @@
     "typescript": "^5.8.3"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+      "seed": "node prisma/seed.js"
   }
 }

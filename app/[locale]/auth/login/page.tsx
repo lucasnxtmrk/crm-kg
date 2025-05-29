@@ -4,6 +4,8 @@ import { Link } from '@/i18n/routing';
 import LoginForm from "@/components/partials/auth/login-form";
 import Logo from "@/components/logo";
 import Image from 'next/image';
+
+
 export default function Login3() {
   return (
     <div

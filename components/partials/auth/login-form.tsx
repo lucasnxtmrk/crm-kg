@@ -11,10 +11,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from "zod";
 import { cn } from "@/lib/utils"
 import { Loader2 } from 'lucide-react';
-import { loginUser } from '@/action/auth-action';
 import { toast } from "sonner"
 import { useRouter } from '@/components/navigation';
 import { signIn } from "next-auth/react";
+import { getCsrfToken } from "next-auth/react"; // ✅ novo
 
 
 const schema = z.object({
@@ -52,27 +52,28 @@ const LoginForm = () => {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   const onSubmit = (data: z.infer<typeof schema>) => {
-    startTransition(async () => {
-      try {
+  startTransition(async () => {
+    try {
+      const csrfToken = await getCsrfToken(); // ✅ novo
 
-const result = await signIn("credentials", {
-  email: data.email,
-  password: data.password,
-  redirect: false,
-});
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        csrfToken,
+      });
 
-        if (result?.error) {
-  toast.error("Email ou senha inválidos");
-} else {
-  toast.success("Você está logado");
-  router.push("/influenciadores");
-}
-
-      } catch (err: any) {
-        toast.error(err.message);
+      if (!result?.error) {
+        toast.success("Logado com sucesso!");
+        router.push("/influenciadores");
+      } else {
+        toast.error("Email ou senha inválidos");
       }
-    });
-  };
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  });
+};
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-5 2xl:mt-7 space-y-4">

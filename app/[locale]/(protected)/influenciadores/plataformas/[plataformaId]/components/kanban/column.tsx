@@ -24,9 +24,10 @@ type Props = {
   column: Column;
   tasks: InfluenciadorKanban[];
   onTaskClick: (task: InfluenciadorKanban) => void;
+  plataformaId: string; // ✅ Adicionado
 };
 
-function ColumnContainer({ column, tasks, onTaskClick }: Props) {
+function ColumnContainer({ column, tasks, onTaskClick, plataformaId }: Props) {
   const [editMode, setEditMode] = useState(false);
   const [deleteColumn, setDeleteColumn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -114,8 +115,9 @@ function ColumnContainer({ column, tasks, onTaskClick }: Props) {
       <NewInfluenciadorModal
   open={isModalOpen}
   onClose={() => setIsModalOpen(false)}
-  plataformaId={'o-id-ou-slug-dessa-plataforma'}
+  plataformaId={plataformaId}
 />
+
     </>
   );
 }

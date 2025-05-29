@@ -169,6 +169,7 @@ const KanBanApp = () => {
                 <ColumnContainer
                   key={col.id}
                   column={col}
+                  plataformaId={plataformaId}
                   tasks={tasks.filter((task) => task.status === col.id)}
                   onTaskClick={(inf) => {
                     const completo = influenciadores.find((i) => i.id === inf.id);
@@ -186,6 +187,7 @@ const KanBanApp = () => {
             <DragOverlay>
               {activeColumn && (
                 <ColumnContainer
+                plataformaId={plataformaId}
                   column={activeColumn}
                   tasks={tasks.filter((task) => task.status === activeColumn.id)}
                   onTaskClick={() => {}}

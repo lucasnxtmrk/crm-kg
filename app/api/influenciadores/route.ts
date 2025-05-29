@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
-// Buscar todos os influenciadores
+// 🔍 Buscar todos os influenciadores (GET)
 export async function GET() {
   const influenciadores = await prisma.influenciadores.findMany({
     include: {
@@ -12,19 +12,32 @@ export async function GET() {
           recargas: true,
         },
       },
-      salarios_mensais: true, // <-- Adicione esta linha!
+      salarios_mensais: true,
     },
   });
 
   return NextResponse.json(influenciadores);
 }
 
-// Criar novo influenciador
+// ✨ Criar novo influenciador (POST)
 export async function POST(req: Request) {
   const data = await req.json();
   console.log("🛠️ Payload recebido:", data);
 
   try {
+    // 🛡️ Validação: verificar se a plataforma existe antes de criar
+    const plataformaExiste = await prisma.plataformas.findUnique({
+      where: { id: data.plataforma_id },
+    });
+
+    if (!plataformaExiste) {
+      return NextResponse.json(
+        { message: "Plataforma não encontrada." },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Criação do influenciador com cadastro na plataforma
     const novo = await prisma.influenciadores.create({
       data: {
         id: data.id,
@@ -38,17 +51,14 @@ export async function POST(req: Request) {
         chavepix: data.chavepix,
         status: data.status,
         motivo_banimento: data.motivo_banimento,
-    
         contratado: data.contratado,
         salario_fixo: data.salario_fixo,
-    
+
         cadastros_influenciadores: {
           create: {
             id: uuidv4(),
             influenciador_plataforma_id: data.influenciador_plataforma_id,
-            plataformas: {
-              connect: { id: data.plataforma_id },
-            },
+            plataforma_id: data.plataforma_id, // ✅ Correto!
           },
         },
       },
@@ -58,7 +68,6 @@ export async function POST(req: Request) {
         },
       },
     });
-    
 
     return NextResponse.json(novo, { status: 201 });
   } catch (err) {

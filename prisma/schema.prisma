@@ -42,11 +42,11 @@ model influenciadores {
   id               String   @id @db.Uuid
   nome             String   @db.VarChar(255)
   imagem           String?
-  instagram        String   @db.VarChar(100)
+  instagram        String?   @db.VarChar(100)
   email            String?  @db.VarChar(255)
   telefone         String?  @db.VarChar(20)
   data_cadastro    DateTime @db.Date
-  cpf              String   @unique @db.VarChar(20)
+  cpf              String?   @unique @db.VarChar(20)
   chavepix         String?  @db.VarChar(255)
   status           String   @db.VarChar(20)
   motivo_banimento String?

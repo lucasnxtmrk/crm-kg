@@ -85,27 +85,30 @@ export default function NewInfluenciadorModal({
   
     const novoInfluId = uuidv4();
   
-    const resp = await fetch("/api/influenciadores", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id: novoInfluId,
-        nome,
-        imagem: fotoPreview,
-        instagram,
-        email,
-        telefone,
-        data_cadastro: new Date().toISOString().split("T")[0],
-        cpf,
-        chavepix,
-        status,
-        motivo_banimento: null,
-  
-        // campos para o nested create
-        plataforma_id: plataformaId,
-        influenciador_plataforma_id: influenciadorPlatId,
-      }),
-    });
+    const payload = {
+  id: novoInfluId,
+  nome,
+  imagem: fotoPreview,
+  instagram,
+  email,
+  telefone,
+  data_cadastro: new Date().toISOString().split("T")[0],
+  cpf,
+  chavepix,
+  status,
+  motivo_banimento: null,
+  plataforma_id: plataformaId,
+  influenciador_plataforma_id: influenciadorPlatId,
+};
+
+console.log("Payload enviado:", payload); // 🔍 agora sim, visível no console
+
+const resp = await fetch("/api/influenciadores", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload),
+});
+
   
     if (!resp.ok) {
       console.error("Falha ao criar influenciador:", await resp.text());
